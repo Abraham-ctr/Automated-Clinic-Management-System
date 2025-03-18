@@ -1,28 +1,24 @@
-import 'package:automated_clinic_management_system/providers/admin_provider.dart';
-import 'package:automated_clinic_management_system/providers/patient_provider.dart';
+import 'package:automated_clinic_management_system/providers/drawer_provider.dart';
+import 'package:automated_clinic_management_system/services/drawer_service.dart';
+import 'package:automated_clinic_management_system/utils/constants.dart';
+import 'package:automated_clinic_management_system/utils/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'providers/auth_provider.dart';
-import 'screens/landing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => AdminProvider()),
-        ChangeNotifierProvider(create: (_) => PatientProvider()..loadPatients()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase initialization error: $e');
+  }
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,10 +26,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Clinic Management System',
-      home: LandingScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => DrawerProvider()),
+        Provider(create: (context) => DrawerService()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Clinic Management System',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          scaffoldBackgroundColor: AppConstants.bgColor,
+        ),
+        
+        initialRoute: '/',
+        routes: AppRoutes.getRoutes(),
+
+      ),
     );
   }
 }
