@@ -38,7 +38,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       body: Center(
         child: SingleChildScrollView(
@@ -49,7 +49,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: const [
                     BoxShadow(
@@ -69,7 +69,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     // header text
                     const Text(
                       "Enter your email address to receive a password reset link.",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(fontSize: 16,),
                       textAlign: TextAlign.center,
                     ),
 

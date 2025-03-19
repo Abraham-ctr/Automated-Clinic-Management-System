@@ -41,7 +41,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       body: Center(
         child: SingleChildScrollView(
@@ -52,7 +52,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: const [
                     BoxShadow(

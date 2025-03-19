@@ -21,7 +21,7 @@ static const String landing = '/';
       register: (context) => const RegisterAdminScreen(),
       dashboard: (context) => const DashboardScreen(),
       forgotPassword: (context) => const ForgotPasswordScreen(),
-      settings: (context) => const SettingsScreen(),
+      settings: (context) => SettingsScreen(),
 
     };
   }

@@ -38,8 +38,8 @@ class MyDrawer extends StatelessWidget {
               SizedBox(
                 height: 200,
                 child: UserAccountsDrawerHeader(
-                  accountEmail: Text(drawerProvider.adminEmail),
-                  accountName: Text(drawerProvider.adminFullName),
+                  accountEmail: Text(drawerProvider.adminEmail, style: TextStyle(color: Theme.of(context).primaryColor),),
+                  accountName: Text(drawerProvider.adminFullName, style: TextStyle(color: Theme.of(context).primaryColor),),
                   currentAccountPictureSize: const Size(100, 100),
                   currentAccountPicture: CircleAvatar(
                     backgroundColor: AppConstants.blueColor,
@@ -114,10 +114,11 @@ class MyDrawer extends StatelessWidget {
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     return ListTile(
-      leading: Icon(icon, color: Colors.black87),
+      leading: Icon(icon),
       title: Text(title),
-      textColor: currentRoute == route ? Colors.blue : Colors.black87, // Change text color for active route
+      textColor: currentRoute == route ? Colors.blue : null, // Change text color for active route
       onTap: () {
+        Navigator.pop(context);
         Navigator.pushNamed(context, route);
       },
     );
@@ -129,7 +130,7 @@ class MyDrawer extends StatelessWidget {
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     return ExpansionTile(
-      leading: Icon(icon, color: Colors.black87),
+      leading: Icon(icon),
       title: Text(title),
       textColor: currentRoute == title ? Colors.blue.shade100 : null, // Highlight active expansion tile
       childrenPadding: const EdgeInsets.only(left: 20),

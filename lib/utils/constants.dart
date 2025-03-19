@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppConstants {
 
   // scaffold bg color
-  static const Color bgColor = Colors.white;
+  static const Color whiteColor = Colors.white;
 
   // blue color
   static const Color blueColor = Color(0xFF2b1176);

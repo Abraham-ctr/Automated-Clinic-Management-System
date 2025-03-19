@@ -8,7 +8,7 @@ class SubAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       title:  Text(
         text,
         style: const TextStyle(
@@ -18,26 +18,6 @@ class SubAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       centerTitle: true,
-      leading: Builder(
-        builder: (context) => IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black), // Drawer menu button
-          onPressed: () {
-            Scaffold.of(context).openDrawer(); // Correctly finds the Scaffold
-          },
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: IconButton(
-            onPressed: () {
-
-            },
-            icon: const Icon(Icons.logout, color: Colors.red),
-            tooltip: "Logout",
-          ),
-        ),
-      ],
     );
   }
 

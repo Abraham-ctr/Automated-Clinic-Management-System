@@ -59,7 +59,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -69,7 +69,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: const [
                     BoxShadow(

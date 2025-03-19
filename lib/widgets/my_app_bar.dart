@@ -8,7 +8,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       title: const Text(
         "Dominion University Clinic Management System",
         style: TextStyle(
@@ -21,7 +21,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 80,
       leading: Builder(
         builder: (context) => IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black), // Drawer menu button
+          icon: const Icon(Icons.menu), // Drawer menu button
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },

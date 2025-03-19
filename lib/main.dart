@@ -1,6 +1,6 @@
 import 'package:automated_clinic_management_system/providers/drawer_provider.dart';
+import 'package:automated_clinic_management_system/providers/theme_provider.dart';
 import 'package:automated_clinic_management_system/services/drawer_service.dart';
-import 'package:automated_clinic_management_system/utils/constants.dart';
 import 'package:automated_clinic_management_system/utils/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,19 +30,18 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => DrawerProvider()),
         Provider(create: (context) => DrawerService()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Clinic Management System',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          scaffoldBackgroundColor: AppConstants.bgColor,
-        ),
-        
-        initialRoute: '/',
-        routes: AppRoutes.getRoutes(),
-
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Clinic Management System',
+            theme: themeProvider.themeData, // Use the dynamic theme
+            initialRoute: '/',
+            routes: AppRoutes.getRoutes(),
+          );
+        },
       ),
     );
   }

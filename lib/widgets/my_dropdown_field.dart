@@ -1,4 +1,3 @@
-import 'package:automated_clinic_management_system/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class MyDropdownField extends StatelessWidget {
@@ -20,7 +19,7 @@ class MyDropdownField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: DropdownButtonFormField<String>(
-        dropdownColor: AppConstants.bgColor,
+        dropdownColor: Theme.of(context).primaryColor,
         value: value == "" ? null : value, // Ensure it doesn't select an empty value
         items: [
           DropdownMenuItem<String>( // Disabled default option
@@ -33,7 +32,7 @@ class MyDropdownField extends StatelessWidget {
               value: item,
               child: Text(item, style: const TextStyle(fontSize: 16)),
             );
-          }).toList(),
+          }),
         ],
         onChanged: onChanged,
         decoration: InputDecoration(
