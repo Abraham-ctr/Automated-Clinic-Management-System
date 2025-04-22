@@ -1,10 +1,11 @@
-import 'package:automated_clinic_management_system/services/auth_service.dart';
-import 'package:automated_clinic_management_system/utils/utilities.dart';
+import 'package:automated_clinic_management_system/core/utils/utilities.dart';
+import 'package:automated_clinic_management_system/providers/auth_provider.dart';
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/my_button.dart';
 import 'package:automated_clinic_management_system/widgets/my_dropdown_field.dart';
 import 'package:automated_clinic_management_system/widgets/my_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterAdminScreen extends StatefulWidget {
   const RegisterAdminScreen({super.key});
@@ -17,31 +18,6 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
 
   final _formKey = GlobalKey<FormState>();
    bool isLoading = false;
-
-  void _register() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() {
-        isLoading = true;
-      });
-
-      await AuthService().registerUser(
-        context: context,
-        surname: capitalizeAndTrim(_surnameController.text),
-        firstName: capitalizeAndTrim(_firstNameController.text),
-        middleName: capitalizeAndTrim(_middleNameController.text),
-        email: _emailController.text.trim(),
-        phoneNumber: addPrefixToPhoneNumber(_phoneController.text),
-        regNumber: _regNumberController.text.trim(),
-        gender: _gender,
-        role: _role,
-        password: _passwordController.text.trim(),
-      );
-
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
   
   // controllers
   final TextEditingController _surnameController = TextEditingController();
@@ -56,6 +32,67 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
   String _role = 'Nurse';
 
   @override
+  void dispose() {
+    for (final c in [
+      _surnameController,
+      _firstNameController,
+      _middleNameController,
+      _emailController,
+      _phoneController,
+      _regNumberController,
+      _passwordController,
+      _confirmPasswordController,
+    ]) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _onRegisterPressed() async {
+  if (!_formKey.currentState!.validate()) return;
+
+  setState(() => isLoading = true);
+  try {
+    // 1) attempt registration
+    await context.read<AuthProvider>().register(
+      email: capitalizeAndTrim(_emailController.text),
+      password: _passwordController.text.trim(),
+      surname: capitalizeAndTrim(_surnameController.text),
+      firstName: capitalizeAndTrim(_firstNameController.text),
+      middleName: capitalizeAndTrim(_middleNameController.text),
+      phoneNumber: _phoneController.text.trim(),
+      regNumber: _regNumberController.text.toUpperCase().trim(),
+      gender: _gender,
+      role: _role,
+    );
+
+    // 2) get the provider to inspect error/success
+    final auth = context.read<AuthProvider>();
+    if (auth.errorMessage != null) {
+      // Show the error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.errorMessage!)),
+      );
+    } else {
+      // Navigate away on success
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  } catch (e, st) {
+    // Unexpected failure (shouldn’t normally happen)
+    debugPrint('🔥 Registration exception: $e\n$st');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Unexpected error: ${e.toString()}')),
+    );
+  } finally {
+    // ALWAYS turn off the loader
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
+  }
+}
+
+
+  @override
   Widget build(BuildContext context) {
 
     return Scaffold(
@@ -67,7 +104,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
             child: Form(
               key: _formKey,
               child: Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.only(left: 20, right: 20,),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(15),
@@ -251,15 +288,15 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
                       },
                     ),
 
-
                     const SizedBox(height: 20),
-                    // Register Button with MyButton Component
+                    // Register Button
                     MyButton(
                       text: "Register",
                       isLoading: isLoading,
-                      onPressed: _register,
+                      onPressed: isLoading ? null : _onRegisterPressed,
                       isPrimary: true
-                    )
+                    ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),

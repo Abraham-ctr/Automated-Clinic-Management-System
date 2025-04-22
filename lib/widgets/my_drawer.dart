@@ -1,15 +1,15 @@
-import 'package:automated_clinic_management_system/services/auth_service.dart';
-import 'package:automated_clinic_management_system/services/drawer_service.dart';
+// import 'package:automated_clinic_management_system/services/auth_service.dart';
+import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
 import 'package:automated_clinic_management_system/providers/drawer_provider.dart';
-import 'package:automated_clinic_management_system/utils/constants.dart';
-import 'package:automated_clinic_management_system/utils/routes.dart';
+import 'package:automated_clinic_management_system/core/utils/constants.dart';
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget {
   MyDrawer({super.key});
   final DrawerService drawerService = DrawerService();
-  final authService = AuthService();
+  // final authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class MyDrawer extends StatelessWidget {
                   accountName: Text(drawerProvider.adminFullName, style: TextStyle(color: Theme.of(context).primaryColor),),
                   currentAccountPictureSize: const Size(100, 100),
                   currentAccountPicture: CircleAvatar(
-                    backgroundColor: AppConstants.blueColor,
+                    backgroundColor: AppConstants.priColor,
                     child: Text(
                       drawerProvider.adminInitials,
                       style: const TextStyle(fontSize: 45, color: Colors.white),
@@ -98,7 +98,7 @@ class MyDrawer extends StatelessWidget {
                   style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
-                  authService.logoutUser(context: context);
+                  // authService.logoutUser(context: context);
                 },
               ),
             ],

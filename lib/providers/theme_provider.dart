@@ -1,4 +1,4 @@
-import 'package:automated_clinic_management_system/utils/constants.dart';
+import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,8 +37,8 @@ class ThemeProvider extends ChangeNotifier {
       bodyMedium: TextStyle(color: Colors.black),
     ),
     iconTheme: const IconThemeData(color: Colors.black),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.grey[100],
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppConstants.lightGreyColor,
     ),
   );
 

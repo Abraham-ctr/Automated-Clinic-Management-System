@@ -1,4 +1,4 @@
-import 'package:automated_clinic_management_system/utils/constants.dart';
+import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class FormHeader extends StatelessWidget {
@@ -22,14 +22,15 @@ class FormHeader extends StatelessWidget {
             children: [
               Text(
                 text,
-                style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: AppConstants.goldColor),
+                style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: AppConstants.priColor),
               ),
         
               Positioned(
                 left: 0,
                 child: IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back_ios),
+                  icon: const Icon(Icons.arrow_back_ios, color: AppConstants.priColor ),
+                  tooltip: "Go Back",
                 ),
               ),
             ],

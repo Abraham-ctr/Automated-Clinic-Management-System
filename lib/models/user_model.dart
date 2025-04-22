@@ -25,6 +25,21 @@ class UserModel {
     required this.createdAt,
   });
 
+  // Convert instance to Firestore document
+  Map<String, dynamic> toMap() {
+    return {
+      "surname": surname,
+      "firstName": firstName,
+      "middleName": middleName,
+      "email": email,
+      "phoneNumber": phoneNumber,
+      "regNumber": regNumber,
+      "gender": gender,
+      "role": role,
+      "createdAt": createdAt,
+    };
+  }
+
   // Factory method to create an instance from Firestore data
   factory UserModel.fromMap(Map<String, dynamic> data, String documentId) {
     return UserModel(
@@ -39,20 +54,5 @@ class UserModel {
       role: data['role'] ?? 'nurse',
       createdAt: data['createdAt'] ?? Timestamp.now(),
     );
-  }
-
-  // Convert instance to Firestore document
-  Map<String, dynamic> toMap() {
-    return {
-      "surname": surname,
-      "firstName": firstName,
-      "middleName": middleName,
-      "email": email,
-      "phoneNumber": phoneNumber,
-      "regNumber": regNumber,
-      "gender": gender,
-      "role": role,
-      "createdAt": createdAt,
-    };
   }
 }

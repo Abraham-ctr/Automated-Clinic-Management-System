@@ -1,3 +1,4 @@
+import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatefulWidget {
@@ -37,7 +38,8 @@ class MyTextFieldState extends State<MyTextField> {
         obscureText: widget.isPassword ? _obscureText : false,
         decoration: InputDecoration(
           labelText: widget.label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          labelStyle: const TextStyle(color: AppConstants.darkGreyColor),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8),),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           suffixIcon: widget.isPassword
               ? IconButton(

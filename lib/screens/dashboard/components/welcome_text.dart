@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:automated_clinic_management_system/services/auth_service.dart';
+// import 'package:automated_clinic_management_system/services/auth_service.dart';
 
 class WelcomeText extends StatefulWidget {
   const WelcomeText({super.key});
@@ -9,6 +9,7 @@ class WelcomeText extends StatefulWidget {
 }
 
 class _WelcomeTextState extends State<WelcomeText> {
+  String? role;
   String? firstName;
   String? regNumber;
   bool isLoading = true;
@@ -16,25 +17,26 @@ class _WelcomeTextState extends State<WelcomeText> {
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    // _fetchUserData();
   }
 
-  // Fetch current user data
-  Future<void> _fetchUserData() async {
-    Map<String, dynamic>? userData = await AuthService().getUserData(context);
+  // // Fetch current user data
+  // Future<void> _fetchUserData() async {
+  //   Map<String, dynamic>? userData = await AuthService().getUserData(context);
 
-    if (userData != null) {
-      setState(() {
-        firstName = userData['firstName'];
-        regNumber = userData['regNumber'];
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        isLoading = true;
-      });
-    }
-  }
+  //   if (userData != null) {
+  //     setState(() {
+  //     role = userData['role'];
+  //       firstName = userData['firstName'];
+  //       regNumber = userData['regNumber'];
+  //       isLoading = false;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       isLoading = true;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +49,11 @@ class _WelcomeTextState extends State<WelcomeText> {
               : Column(
                   children: [
                     Text(
-                      'Welcome, ${firstName ?? "User"}!',
+                      'Welcome, $role $firstName!',
                       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Registration Number: ${regNumber ?? "Not available"}',
+                      'Registration Number: $regNumber',
                       style: const TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                   ],

@@ -1,5 +1,5 @@
 import 'package:automated_clinic_management_system/providers/theme_provider.dart';
-import 'package:automated_clinic_management_system/services/auth_service.dart';
+// import 'package:automated_clinic_management_system/services/auth_service.dart';
 import 'package:automated_clinic_management_system/widgets/sub_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({super.key});
-  final AuthService authService = AuthService();
+  // final AuthService authService = AuthService();
 
   void _exportPatientData(BuildContext context, String filter) async {
     try {
@@ -184,6 +184,7 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 _buildSettingsItem(Icons.local_hospital, "Clinic Preferences", () {
                   // Future: Add clinic-related settings
+                  Navigator.pushNamed(context, "/notifications");
                 }),
               ],
             ),
@@ -245,7 +246,7 @@ class SettingsScreen extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context); // Close dialog
-                              authService.logoutUser(context: context); // Proceed with logout
+                              // authService.logoutUser(context: context); // Proceed with logout
                             },
                             child: const Text("Logout", style: TextStyle(color: Colors.red)),
                           ),
@@ -398,20 +399,5 @@ class SettingsScreen extends StatelessWidget {
       },
     );
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

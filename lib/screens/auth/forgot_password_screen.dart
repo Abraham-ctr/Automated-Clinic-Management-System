@@ -1,8 +1,9 @@
-import 'package:automated_clinic_management_system/services/auth_service.dart';
+import 'package:automated_clinic_management_system/providers/auth_provider.dart';
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/my_button.dart';
 import 'package:automated_clinic_management_system/widgets/my_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -16,23 +17,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
-  // Forgot password method
-  void _forgotPassword() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() {
-        isLoading = true;
-      });
+  Future<void> _onSendResetLinkPressed() async {
+    if (!_formKey.currentState!.validate()) return;
 
-      // Call AuthService to send password reset email
-      await AuthService().resetPassword(
-        context: context,
-        email: _emailController.text.trim(),
+    setState(() => isLoading = true);
+
+    final auth = context.read<AuthProvider>();
+
+    // Trigger the reset password method
+    await auth.resetPassword(_emailController.text.trim());
+
+    if (!mounted) return;
+
+    if (auth.errorMessage != null) {
+      // Show error message in Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.errorMessage!)),
       );
-
-      setState(() {
-        isLoading = false;
-      });
+    } else {
+      // Show success message in Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.errorMessage!)), // Success message here
+      );
     }
+
+    setState(() => isLoading = false);
   }
 
   @override
@@ -44,6 +53,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
+            
             child: Form(
               key: _formKey,
               child: Container(
@@ -93,7 +103,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     // forgot password button
                     MyButton(
                       text: "Reset",
-                      onPressed: _forgotPassword,
+                      onPressed: _onSendResetLinkPressed,
                       isPrimary: true
                     )
                   ],

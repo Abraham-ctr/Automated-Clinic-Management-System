@@ -1,240 +1,171 @@
-// import 'package:flutter/material.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:automated_clinic_management_system/screens/auth/login_admin_screen.dart';
-// import 'package:automated_clinic_management_system/screens/dashboard/dashboard_screen.dart';
+import 'package:automated_clinic_management_system/core/services/auth_service.dart';
+import 'package:automated_clinic_management_system/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-// class AuthProvider with ChangeNotifier {
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
-//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-//   User? _user;
-//   bool _isLoading = false;
+/// Various phases of our auth flow
+enum AuthStatus {
+  uninitialized,  // before we know if someone’s logged in
+  authenticating, // in the middle of register/login/reset
+  authenticated,  // we have a valid user
+  unauthenticated,// no user logged in
+  error           // last operation failed
+}
 
-//   User? get user => _user;
-//   bool get isLoading => _isLoading;
+class AuthProvider extends ChangeNotifier {
+  final AuthService _authService;
 
-//   Future<void> register({
-//   required String surname,
-//   required String firstName,
-//   required String middleName,
-//   required String email,
-//   required String phone,
-//   required String regNumber,
-//   required String password,
-//   required String gender,
-//   required BuildContext context,
-// }) async {
-//   _isLoading = true;
-//   notifyListeners();
+  AuthStatus _status = AuthStatus.uninitialized;
+  UserModel?   _user;
+  String?      _errorMessage;
 
-//   try {
-//     // Function to capitalize first letter
-//     String formatName(String name) {
-//       return name.trim().isEmpty
-//           ? ""
-//           : name.trim()[0].toUpperCase() + name.trim().substring(1).toLowerCase();
-//     }
+  AuthProvider({AuthService? authService})
+      : _authService = authService ?? AuthService() {
+    _listenToAuthState();
+  }
 
-//     // Format names
-//     surname = formatName(surname);
-//     firstName = formatName(firstName);
-//     middleName = formatName(middleName);
-//     gender = formatName(gender);
+  // Public getters
+  AuthStatus get status       => _status;
+  UserModel? get user         => _user;
+  String?    get errorMessage => _errorMessage;
 
-//     // Validate phone number
-//     phone = phone.trim();
-//     if (!RegExp(r'^[0-9]+$').hasMatch(phone)) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text("Phone number must contain only digits.")),
-//       );
-//       return;
-//     }
-//     if (phone.length > 15) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text("Phone number cannot exceed 15 digits.")),
-//       );
-//       return;
-//     }
+  /// Starts listening to FirebaseAuth’s state changes.
+  /// When it emits a user, we fetch their profile; otherwise we clear state.
+  void _listenToAuthState() {
+    _authService.authStateChanges.listen((firebaseUser) async {
+      if (firebaseUser == null) {
+        _status = AuthStatus.unauthenticated;
+        _user   = null;
+        notifyListeners();
+      } else {
+        _status = AuthStatus.authenticating;
+        notifyListeners();
 
-//     // Create user with Firebase Auth
-//     UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-//       email: email.trim(),
-//       password: password.trim(),
-//     );
-//     _user = userCredential.user;
+        try {
+          _user   = await _authService.getCurrentUserProfile();
+          _status = AuthStatus.authenticated;
+        } catch (e) {
+          _status       = AuthStatus.error;
+          _errorMessage = e.toString();
+        }
+        notifyListeners();
+      }
+    });
+  }
 
-//     // Save user data to Firestore
-//     await _firestore.collection("admins").doc(_user!.uid).set({
-//       "surname": surname,
-//       "firstName": firstName,
-//       "middleName": middleName,
-//       "email": email.trim(),
-//       "phone": phone,
-//       "regNumber": regNumber.trim(),
-//       "gender": gender,
-//       "createdAt": Timestamp.now(),
-//     });
+  /// Registers a new nurse/doctor. On success, FirebaseAuth stream will fire
+  /// and populate `_user`. On error, we capture the message.
+  Future<void> register({
+    required String email,
+    required String password,
+    required String surname,
+    required String firstName,
+    required String middleName,
+    required String phoneNumber,
+    required String regNumber,
+    required String gender,
+    required String role,
+  }) async {
+    _status       = AuthStatus.authenticating;
+    _errorMessage = null;
+    notifyListeners();
 
-//     // Show success message
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       const SnackBar(content: Text("Registration successful!")),
-//     );
-
-//     // Navigate to login screen
-//     if (context.mounted) {
-//       Navigator.pushReplacement(
-//         context,
-//         MaterialPageRoute(builder: (context) => const LoginAdminScreen()),
-//       );
-//     }
-//   } catch (e) {
-//     String errorMessage = "An error occurred. Please try again.";
-
-//     if (e is FirebaseAuthException) {
-//       switch (e.code) {
-//         case 'email-already-in-use':
-//           errorMessage = "This email is already registered.";
-//           break;
-//         case 'weak-password':
-//           errorMessage = "Password is too weak. Use a stronger password.";
-//           break;
-//         case 'invalid-email':
-//           errorMessage = "Invalid email format.";
-//           break;
-//         default:
-//           errorMessage = "Registration failed. Please check your details.";
-//           break;
-//       }
-//     }
-
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(content: Text(errorMessage)),
-//     );
-//   } finally {
-//     _isLoading = false;
-//     notifyListeners();
-//   }
-// }
+    try {
+      await _authService.register(
+        email: email,
+        password: password,
+        surname: surname,
+        firstName: firstName,
+        middleName: middleName,
+        phoneNumber: phoneNumber,
+        regNumber: regNumber,
+        gender: gender,
+        role: role,
+      );
+      // FirebaseAuth stream listener will set status to authenticated
+    } catch (e) {
+      _status       = AuthStatus.error;
+      _errorMessage = e is AuthException ? e.message : e.toString();
+      notifyListeners();
+    }
+  }
 
 
-//   // Login User
-//   Future<void> login({
-//     required String email,
-//     required String password,
-//     required BuildContext context,
-//   }) async {
-//     _isLoading = true;
-//     notifyListeners();
 
-//     try {
-//       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-//         email: email.trim(),
-//         password: password.trim(),
-//       );
-//       _user = userCredential.user;
 
-//       if (context.mounted) {
-//         Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(builder: (context) => const DashboardScreen()),
-//         );
-//       }
-//     } catch (e) {
-//       String errorMessage = "Login failed. Please try again.";
+  /// Logs in an existing user. On success, FirebaseAuth stream fires.
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
+    _status = AuthStatus.authenticating;
+    _errorMessage = null;
+    notifyListeners();
 
-//       if (e is FirebaseAuthException) {
-//         switch (e.code) {
-//           case 'user-not-found':
-//             errorMessage = "No user found with this email.";
-//             break;
-//           case 'wrong-password':
-//             errorMessage = "Incorrect password. Please try again.";
-//             break;
-//           case 'invalid-email':
-//             errorMessage = "Invalid email format.";
-//             break;
-//           default:
-//             errorMessage = "Login failed. Check your credentials.";
-//             break;
-//         }
-//       }
+    try {
+      // Attempt login
+      final user = await _authService.login(email: email, password: password);
 
-//       if (context.mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text(errorMessage)),
-//         );
-//       }
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
+      if (user != null) {
+        // If login is successful
+        _status = AuthStatus.authenticated;
+      } else {
+        // In case user is not found (should ideally never happen if login works properly)
+        _status = AuthStatus.error;
+        _errorMessage = 'Login failed: User not found';
+      }
+    } on FirebaseAuthException catch (e) {
+      // Handle Firebase-specific exceptions (e.g., invalid email or password)
+      _status = AuthStatus.error;
+      _errorMessage = e.message ?? 'Login failed: ${e.code}';
+    } on Exception catch (e) {
+      // Catch general exceptions
+      _status = AuthStatus.error;
+      _errorMessage = 'An unexpected error occurred during login: ${e.toString()}';
+    } catch (e) {
+      // Catch all other errors (e.g., network issues)
+      _status = AuthStatus.error;
+      _errorMessage = 'An unknown error occurred: ${e.toString()}';
+    }
 
-//   // Logout User
-//   Future<void> logout(BuildContext context) async {
-//     try {
-//       await _auth.signOut();
-//       _user = null;
-//       notifyListeners();
+    notifyListeners();
+  }
 
-//       if (context.mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text("You have been logged out.")),
-//         );
-//         Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(builder: (context) => const LoginAdminScreen()),
-//         );
-//       }
-//     } catch (e) {
-//       if (context.mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text("Logout failed. Please try again.")),
-//         );
-//       }
-//     }
-//   }
 
-//   // Reset Password
-//   Future<void> resetPassword(String email, BuildContext context) async {
-//     if (email.isEmpty) {
-//       if (context.mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text("Please enter your email address.")),
-//         );
-//       }
-//       return;
-//     }
 
-//     try {
-//       await _auth.sendPasswordResetEmail(email: email.trim());
+  /// Sends a reset‑password email. On error, captures the message.
+  Future<void> resetPassword(String email) async {
+    _status = AuthStatus.authenticating; // Start authenticating
+    _errorMessage = null; // Clear previous error messages
+    notifyListeners();
 
-//       if (context.mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text("A password reset link has been sent to your email.")),
-//         );
-//         Navigator.pop(context);
-//       }
-//     } on FirebaseAuthException catch (e) {
-//       String errorMessage = "An error occurred. Please try again.";
+    try {
+      // Call the service method to send password reset email
+      await _authService.sendPasswordResetEmail(email);
+      
+      _status = AuthStatus.unauthenticated; // Successful reset
+      _errorMessage = "A password reset link has been sent to your email."; // Success message
+      notifyListeners();
+    } catch (e) {
+      _status = AuthStatus.error; // Handle error state
+      _errorMessage = e is AuthException ? e.message : e.toString(); // Get error message
+      notifyListeners();
+    }
+  }
 
-//       if (e.code == 'user-not-found') {
-//         errorMessage = "No user found with this email.";
-//       } else if (e.code == 'invalid-email') {
-//         errorMessage = "Please enter a valid email address.";
-//       }
 
-//       if (context.mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text(errorMessage)),
-//         );
-//       }
-//     } catch (e) {
-//       if (context.mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text("Something went wrong. Please try again.")),
-//         );
-//       }
-//     }
-//   }
-// }
+
+
+
+  /// Signs out. The authStateChanges listener will handle clearing `_user`.
+  Future<void> signOut() async {
+    try {
+      await _authService.signOut();
+      // Stream listener will set status to unauthenticated
+    } catch (e) {
+      _status       = AuthStatus.error;
+      _errorMessage = e is AuthException ? e.message : e.toString();
+      notifyListeners();
+    }
+  }
+}

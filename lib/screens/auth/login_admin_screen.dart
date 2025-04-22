@@ -1,8 +1,10 @@
-import 'package:automated_clinic_management_system/services/auth_service.dart';
+import 'package:automated_clinic_management_system/core/utils/constants.dart';
+import 'package:automated_clinic_management_system/providers/auth_provider.dart';
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/my_button.dart';
 import 'package:automated_clinic_management_system/widgets/my_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginAdminScreen extends StatefulWidget {
   const LoginAdminScreen({super.key});
@@ -19,23 +21,34 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() {
-        isLoading = true;
-      });
 
-      await AuthService().loginUser(
-        context: context,
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+  Future<void> _onLoginPressed() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => isLoading = true);
+    final auth = context.read<AuthProvider>();
+
+    await auth.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    if (auth.errorMessage != null) {
+      // Display error message in SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.errorMessage!)),
       );
-
-      setState(() {
-        isLoading = false;
-      });
+    } else if (auth.status == AuthStatus.authenticated) {
+      // Navigate to dashboard if login is successful
+      Navigator.pushReplacementNamed(context, '/dashboard');
     }
+
+    setState(() => isLoading = false);
   }
+
+
   
 
   @override
@@ -102,7 +115,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                     MyButton(
                       text: 'Login',
                       isPrimary: true,
-                      onPressed: _login,
+                      onPressed: isLoading ? null : _onLoginPressed,
                     ),
 
                     const SizedBox(height: 10),
@@ -111,7 +124,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                       onPressed: () {
                         Navigator.pushNamed(context, "/forgotPassword");
                       },
-                      child: const Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
+                      child: const Text("Forgot Password?", style: TextStyle(color: AppConstants.secColor)),
                     ),
                   ],
                 ),

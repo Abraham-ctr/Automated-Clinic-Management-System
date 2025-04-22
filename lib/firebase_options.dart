@@ -1,15 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    return const FirebaseOptions(
-      apiKey: "AIzaSyDyfzFgQocdHJz-fm5tuHa2h1hA6SbhKTA",
-      authDomain: "automated-clinic-management.firebaseapp.com",
-      projectId: "automated-clinic-management",
-      storageBucket: "automated-clinic-management.firebasestorage.app",
-      messagingSenderId: "67711085107",
-      appId: "1:67711085107:web:f3fb3b25bb4e031c2a1146",
-      measurementId: "G-7RRWVCZ08Y",
-    );
+    if (kIsWeb) {
+      return web;
+    }
+    throw UnsupportedError('platform not supported');
   }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: "AIzaSyCo8v8qOBHFBs2WJq9puSURZcskEKPOt7k",
+    authDomain: "acms-b4b83.firebaseapp.com",
+    projectId: "acms-b4b83",
+    storageBucket: "acms-b4b83.firebasestorage.app",
+    messagingSenderId: "781779922553",
+    appId: "1:781779922553:web:3ead1352c0b5b5af7b6ea8"
+  );
+
 }
