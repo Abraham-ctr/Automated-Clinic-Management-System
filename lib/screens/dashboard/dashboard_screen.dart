@@ -1,10 +1,12 @@
+import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
+import 'package:automated_clinic_management_system/core/utils/constants.dart';
+import 'package:automated_clinic_management_system/providers/auth_provider.dart';
+import 'package:automated_clinic_management_system/providers/user_provider.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/date_time_display.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/my_carousel.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/welcome_text.dart';
-import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
-import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/widgets/feature_card.dart';
-import 'package:automated_clinic_management_system/widgets/my_drawer.dart';
+import 'package:automated_clinic_management_system/screens/dashboard/components/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +31,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     // Fetch user data as soon as the DashboardScreen is loaded
-    Provider.of<DrawerService>(context, listen: false).fetchUserData(context);
+    Future.delayed(Duration.zero, () {
+      Provider.of<UserProvider>(context, listen: false).fetchUserData();
+    });
+
+    // Fetch user data when the DashboardScreen is initialized
+    final drawerService = DrawerService();
+    drawerService.fetchUserData(context);
   }
 
   @override
@@ -40,40 +48,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // logo
-            Image.asset(AppConstants.logo, width: 70,),
-
-            // header title
-            const Row(
-              children: [
-               Text(
-                  "Domi",
-                  style: TextStyle(
-                    color: AppConstants.priColor,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "Care",
-                  style: TextStyle(
-                    color: AppConstants.secColor,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  " - The Dominion University Clinic App",
-                  style: TextStyle(
-                    color: AppConstants.priColor,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-
+            Image.asset(AppConstants.logo, width: 70), // Slightly smaller logo
             
+            // header title with dynamic text scaling
+            const Text(
+              "DomiCare - The Dominion University Clinic App",
+              style: TextStyle(
+                color: AppConstants.priColor,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         centerTitle: true,
@@ -85,31 +70,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
         ),
-        // logout button
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-              onPressed: () {
-                
-              },
-              icon: const Icon(Icons.logout, color: Colors.red),
-              tooltip: "Logout",
+            child: Consumer<AuthProvider>(
+              builder: (context, auth, child) => IconButton(
+                onPressed: () async {
+                  final shouldLogout = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Logout'),
+                      content: const Text('Are you sure you want to log out?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Logout', style: TextStyle(color: Colors.red)),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (shouldLogout == true) {
+                    try {
+                      await auth.signOut();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/login',
+                        (route) => false, // Remove all previous routes
+                      );
+                    } catch (_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Failed to sign out')),
+                      );
+                    }
+                  }
+                },
+                icon: const Icon(Icons.logout, color: Colors.red),
+                tooltip: "Logout",
+              ),
             ),
           ),
         ],
       ),
 
-      drawer: MyDrawer(),
-
+      drawer: MyDrawer(), // Custom Drawer
+      
       body: SingleChildScrollView(
         child: Column(
           children: [
-            
-            // Welcome Text
             const WelcomeText(),
-        
-            // carousel
             const MyCarousel(),
 
             const SizedBox(height: 30),
@@ -124,7 +137,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       endIndent: 10,
                     )
                   ),
-                  Text (
+                  Text(
                     "Quick Features",
                     style: TextStyle(
                       fontSize: 16,
@@ -138,13 +151,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       thickness: 2,
                       indent: 10,
                     )
-                  )
-                ]
+                  ),
+                ],
               ),
             ),
 
             const SizedBox(height: 10),
-            // Feature Cards
+            // Consider using GridView for better control over layout
             SizedBox(
               child: Expanded(
                 child: Center(
@@ -204,11 +217,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
 
-            
-
             const SizedBox(height: 10),
             const DateTimeDisplay(),
-            const SizedBox(height: 10,)
+            const SizedBox(height: 10),
           ],
         ),
       ),

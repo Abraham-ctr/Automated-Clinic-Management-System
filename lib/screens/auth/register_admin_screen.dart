@@ -55,7 +55,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
   try {
     // 1) attempt registration
     await context.read<AuthProvider>().register(
-      email: capitalizeAndTrim(_emailController.text),
+      email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
       surname: capitalizeAndTrim(_surnameController.text),
       firstName: capitalizeAndTrim(_firstNameController.text),

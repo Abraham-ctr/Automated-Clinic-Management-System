@@ -3,6 +3,7 @@ import 'package:automated_clinic_management_system/providers/drawer_provider.dar
 import 'package:automated_clinic_management_system/providers/theme_provider.dart';
 import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
 import 'package:automated_clinic_management_system/core/utils/routes.dart';
+import 'package:automated_clinic_management_system/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (context) => DrawerService()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

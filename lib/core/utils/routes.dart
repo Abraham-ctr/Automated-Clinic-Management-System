@@ -36,7 +36,7 @@ static const String landing = '/';
       
 
 
-      settings: (context) => SettingsScreen(),
+      settings: (context) => const SettingsScreen(),
       notifications: (context) => const NotificationsScreen(),
 
     };

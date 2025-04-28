@@ -3,6 +3,7 @@ import 'package:automated_clinic_management_system/core/services/drawer_service.
 import 'package:automated_clinic_management_system/providers/drawer_provider.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/core/utils/routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -97,8 +98,13 @@ class MyDrawer extends StatelessWidget {
                   "Logout",
                   style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
-                onTap: () {
-                  // authService.logoutUser(context: context);
+                onTap: () async {
+                  // Call the logout method
+                  await FirebaseAuth.instance.signOut(); // Firebase sign out
+                  // Optionally reset the user data in the provider
+                  Provider.of<DrawerProvider>(context, listen: false).setUserData('', '', '', '');
+                  // Navigate to login screen
+                  Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                 },
               ),
             ],

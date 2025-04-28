@@ -1,65 +1,44 @@
 import 'package:flutter/material.dart';
-// import 'package:automated_clinic_management_system/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import 'package:automated_clinic_management_system/providers/user_provider.dart'; // UserProvider
 
-class WelcomeText extends StatefulWidget {
+class WelcomeText extends StatelessWidget {
   const WelcomeText({super.key});
 
   @override
-  State<WelcomeText> createState() => _WelcomeTextState();
-}
-
-class _WelcomeTextState extends State<WelcomeText> {
-  String? role;
-  String? firstName;
-  String? regNumber;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // _fetchUserData();
-  }
-
-  // // Fetch current user data
-  // Future<void> _fetchUserData() async {
-  //   Map<String, dynamic>? userData = await AuthService().getUserData(context);
-
-  //   if (userData != null) {
-  //     setState(() {
-  //     role = userData['role'];
-  //       firstName = userData['firstName'];
-  //       regNumber = userData['regNumber'];
-  //       isLoading = false;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       isLoading = true;
-  //     });
-  //   }
-  // }
-
-  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          isLoading
-              ? const CircularProgressIndicator() // Show loading indicator while fetching data
-              : Column(
-                  children: [
-                    Text(
-                      'Welcome, $role $firstName!',
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Registration Number: $regNumber',
-                      style: const TextStyle(fontSize: 18, color: Colors.grey),
-                    ),
-                  ],
+    // Accessing the UserProvider using Consumer
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
+        // Fetch user data if it's not already fetched
+        if (userProvider.isLoading) {
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        } else if (userProvider.hasError) {
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(child: Text('Failed to load user data. Please try again later.', style: TextStyle(color: Colors.red))),
+          );
+        } else {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  'Welcome, ${userProvider.role} ${userProvider.firstName}!',
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-        ],
-      ),
+                Text(
+                  'Registration Number: ${userProvider.regNumber}',
+                  style: const TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }

@@ -17,6 +17,7 @@ class _MyCarouselState extends State<MyCarousel> {
         height: 400,
         autoPlayInterval: const Duration(seconds: 5),
         enlargeCenterPage: true,
+        viewportFraction: 0.85,
       ),
       items: [
         'assets/images/carousel/1.jpg',

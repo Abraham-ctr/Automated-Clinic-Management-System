@@ -23,23 +23,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() => isLoading = true);
 
     final auth = context.read<AuthProvider>();
-
-    // Trigger the reset password method
     await auth.resetPassword(_emailController.text.trim());
 
     if (!mounted) return;
 
-    if (auth.errorMessage != null) {
-      // Show error message in Snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.errorMessage!)),
-      );
-    } else {
-      // Show success message in Snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.errorMessage!)), // Success message here
-      );
-    }
+    final message = auth.errorMessage ?? "Password reset link sent!";
+    final isError = auth.status == AuthStatus.error;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+      ),
+    );
 
     setState(() => isLoading = false);
   }
@@ -102,9 +98,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     const SizedBox(height: 20,),
                     // forgot password button
                     MyButton(
-                      text: "Reset",
-                      onPressed: _onSendResetLinkPressed,
-                      isPrimary: true
+                      text: isLoading ? "Sending..." : "Reset",
+                      onPressed: isLoading ? null : _onSendResetLinkPressed,
+                      isPrimary: true,
                     )
                   ],
                 ),

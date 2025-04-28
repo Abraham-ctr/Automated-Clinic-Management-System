@@ -10,7 +10,7 @@ import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
-  SettingsScreen({super.key});
+  const SettingsScreen({super.key});
   // final AuthService authService = AuthService();
 
   void _exportPatientData(BuildContext context, String filter) async {
