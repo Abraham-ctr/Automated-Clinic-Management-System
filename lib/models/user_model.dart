@@ -28,6 +28,7 @@ class UserModel {
   // Convert instance to Firestore document
   Map<String, dynamic> toMap() {
     return {
+      "uid": uid,
       "surname": surname,
       "firstName": firstName,
       "middleName": middleName,

@@ -17,7 +17,6 @@ class AuthService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   static const String _usersCollection = 'users';
 
-
   /// Registers a new user, saves profile in Firestore, or throws AuthException.
   Future<UserModel> register({
     required String email,
@@ -63,9 +62,6 @@ class AuthService {
     }
   }
 
-
-
-
   /// Sends a password‑reset email or throws AuthException.
   Future<void> sendPasswordResetEmail(String email) async {
     try {
@@ -77,36 +73,31 @@ class AuthService {
     }
   }
 
-
-
-
   /// Signs in and fetches profile, or throws AuthException.
   Future<UserModel?> login({
-  required String email,
-  required String password,
-}) async {
-  try {
-    final creds = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    final doc = await _db.collection(_usersCollection).doc(creds.user!.uid).get();
-    if (!doc.exists) {
-      throw AuthException('No profile found for this account');
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final creds = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final doc =
+          await _db.collection(_usersCollection).doc(creds.user!.uid).get();
+      if (!doc.exists) {
+        throw AuthException('No profile found for this account');
+      }
+      return UserModel.fromMap(doc.data()!, doc.id);
+    } on FirebaseAuthException catch (e) {
+      print(
+          "FirebaseAuthException: ${e.message}, Code: ${e.code}"); // Log the Firebase Auth exception
+      throw AuthException(e.message ?? 'Login failed');
+    } catch (e) {
+      print("Unexpected error: $e"); // Log the unexpected error
+      throw AuthException('An unexpected error occurred during login');
     }
-    return UserModel.fromMap(doc.data()!, doc.id);
-  } on FirebaseAuthException catch (e) {
-    print("FirebaseAuthException: ${e.message}, Code: ${e.code}");  // Log the Firebase Auth exception
-    throw AuthException(e.message ?? 'Login failed');
-  } catch (e) {
-    print("Unexpected error: $e");  // Log the unexpected error
-    throw AuthException('An unexpected error occurred during login');
   }
-}
-
-
-
-
 
   /// Signs out, or throws AuthException.
   Future<void> signOut() async {
@@ -117,8 +108,6 @@ class AuthService {
     }
   }
 
-
-
   /// Returns the currently signed‑in FirebaseAuth user, or null.
   User? get currentFirebaseUser => _auth.currentUser;
 
@@ -128,7 +117,8 @@ class AuthService {
     if (firebaseUser == null) return null;
 
     try {
-      final doc = await _db.collection(_usersCollection).doc(firebaseUser.uid).get();
+      final doc =
+          await _db.collection(_usersCollection).doc(firebaseUser.uid).get();
       if (!doc.exists) return null;
       return UserModel.fromMap(doc.data()!, doc.id);
     } catch (_) {

@@ -16,11 +16,11 @@ class LoginAdminScreen extends StatefulWidget {
 class LoginAdminScreenState extends State<LoginAdminScreen> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  bool _isRemembered = false;
 
-  // controllers
+  // CONTROLLERS
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
 
   Future<void> _onLoginPressed() async {
     if (!_formKey.currentState!.validate()) return;
@@ -48,87 +48,127 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
     setState(() => isLoading = false);
   }
 
-
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
       body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
-                    )
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Back Button and Title
-                    const FormHeader(text: "Admin Login"),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30.0, left: 30, right: 30),
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 1000),
+            child: Row(
+              children: [
+                // LEFT COLUMN: IMAGE
+                Expanded(
+                    flex: 1,
+                    child: Image.asset("assets/images/auth/signIn.png")),
 
-                    // Email Field
-                    MyTextField(
-                      controller: _emailController,
-                      label: "Email",
-                      keyboardType: TextInputType.emailAddress,
-                      isRequired: true,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) return "Please enter your Email";
-                        if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(value.trim())) {
-                          return "Enter a valid email address";
-                        }
-                        return null;
-                      },
-                    ),
+                // RIGHT COLUMN: FORM
+                Expanded(
+                  flex: 1,
+                  child: Form(
+                    key: _formKey,
+                    child: Material(
+                      elevation: 10,
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            // borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.grey)),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const FormHeader(text: "LOGIN"),
+                            const SizedBox(height: 7),
+                            MyTextField(
+                                controller: _emailController,
+                                label: "Email",
+                                keyboardType: TextInputType.emailAddress,
+                                isRequired: true,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return "Please enter your Email";
+                                  }
+                                  if (!RegExp(
+                                          r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+                                      .hasMatch(value.trim())) {
+                                    return "Enter a valid email address";
+                                  }
+                                  return null;
+                                }),
+                            MyTextField(
+                                controller: _passwordController,
+                                label: "Password",
+                                isPassword: true,
+                                isRequired: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Password is required";
+                                  } else if (value.length < 8) {
+                                    return "Password must be at least 8 characters";
+                                  } else if (!RegExp(r'[A-Z]')
+                                      .hasMatch(value)) {
+                                    return "Password must contain at least one uppercase letter";
+                                  } else if (!RegExp(r'[a-z]')
+                                      .hasMatch(value)) {
+                                    return "Password must contain at least one lowercase letter";
+                                  } else if (!RegExp(r'\d').hasMatch(value)) {
+                                    return "Password must contain at least one number";
+                                  } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]')
+                                      .hasMatch(value)) {
+                                    return "Password must contain at least one special character";
+                                  }
+                                  return null;
+                                }),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // CHECKBOX
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                      activeColor: AppConstants.priColor,
+                                      value: _isRemembered,
+                                      onChanged: (val) {
+                                        setState(
+                                            () => _isRemembered = val ?? false);
+                                      },
+                                    ),
+                                    const Text("Remember Me")
+                                  ],
+                                ),
 
-                    // Password Field
-                    MyTextField(
-                      controller: _passwordController,
-                      label: "Password",
-                      isPassword: true,
-                      isRequired: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Password is required";
-                        }
-                        return null;
-                      },
-                    ),
+                                // Forgot Password
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, "/forgotPassword");
+                                  },
+                                  child: const Text("Forgot Password?",
+                                      style: TextStyle(
+                                          color: AppConstants.secColor)),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // Login Button
+                            MyButton(
+                              text: 'Login',
+                              isPrimary: true,
+                              onPressed: isLoading ? null : _onLoginPressed,
+                            ),
 
-                    const SizedBox(height: 20),
-                    // Login Button
-                    MyButton(
-                      text: 'Login',
-                      isPrimary: true,
-                      onPressed: isLoading ? null : _onLoginPressed,
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
                     ),
-
-                    const SizedBox(height: 10),
-                    // Forgot Password
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/forgotPassword");
-                      },
-                      child: const Text("Forgot Password?", style: TextStyle(color: AppConstants.secColor)),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                )
+              ],
             ),
           ),
         ),
