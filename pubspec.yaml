@@ -42,6 +42,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/carousel/
+    - assets/images/auth/
 
   # fonts:
   #   - family: Schyler
