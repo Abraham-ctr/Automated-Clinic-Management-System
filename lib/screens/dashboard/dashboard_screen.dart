@@ -18,7 +18,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  
   final ValueNotifier<String?> _flippedCardNotifier = ValueNotifier(null);
 
   @override
@@ -49,7 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(AppConstants.logo, width: 70), // Slightly smaller logo
-            
+
             // header title with dynamic text scaling
             const Text(
               "DomiCare - The Dominion University Clinic App",
@@ -88,7 +87,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text('Logout', style: TextStyle(color: Colors.red)),
+                          child: const Text('Logout',
+                              style: TextStyle(color: Colors.red)),
                         ),
                       ],
                     ),
@@ -118,7 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
 
       drawer: MyDrawer(), // Custom Drawer
-      
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -131,27 +131,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Divider(
-                      color: AppConstants.secColor,
-                      thickness: 2,
-                      endIndent: 10,
-                    )
-                  ),
-                  Text(
-                    "Quick Features",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppConstants.middleGreyColor,
-                    )
-                  ),
+                      child: Divider(
+                    color: AppConstants.secColor,
+                    thickness: 2,
+                    endIndent: 10,
+                  )),
+                  Text("Quick Features",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppConstants.middleGreyColor,
+                      )),
                   Expanded(
-                    child: Divider(
-                      color: AppConstants.secColor,
-                      thickness: 2,
-                      indent: 10,
-                    )
-                  ),
+                      child: Divider(
+                    color: AppConstants.secColor,
+                    thickness: 2,
+                    indent: 10,
+                  )),
                 ],
               ),
             ),
@@ -162,12 +158,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Expanded(
                 child: Center(
                   child: Wrap(
-                    spacing: MediaQuery.of(context).size.width * 0.02, // Adaptive spacing
+                    spacing: MediaQuery.of(context).size.width *
+                        0.02, // Adaptive spacing
                     runSpacing: 20, // Vertical spacing
                     alignment: WrapAlignment.center,
                     children: [
                       FeatureCard(
-                        title: "Patients",
+                        title: "Manage Patients",
                         icon: Icons.person,
                         color: Colors.blue,
                         flippedCardNotifier: _flippedCardNotifier,
@@ -194,7 +191,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         },
                       ),
                       FeatureCard(
-                        title: "Reports & Analytics",
+                        title: "Generate Reports",
                         icon: Icons.bar_chart,
                         color: Colors.orange,
                         flippedCardNotifier: _flippedCardNotifier,

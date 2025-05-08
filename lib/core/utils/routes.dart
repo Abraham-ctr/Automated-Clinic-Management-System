@@ -1,7 +1,7 @@
-import 'package:automated_clinic_management_system/screens/features/patient_management/medical_form_part1.dart';
-import 'package:automated_clinic_management_system/screens/features/patient_management/medical_form_part2.dart';
-import 'package:automated_clinic_management_system/screens/settings/components/notifications_screen.dart';
-import 'package:automated_clinic_management_system/screens/settings/settings_screen.dart';
+import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/medical_form_part1.dart';
+import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/medical_form_part2.dart';
+import 'package:automated_clinic_management_system/screens/features/settings/components/notifications_screen.dart';
+import 'package:automated_clinic_management_system/screens/features/settings/settings_screen.dart';
 import 'package:automated_clinic_management_system/screens/landing_screen.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/dashboard_screen.dart';
 import 'package:automated_clinic_management_system/screens/auth/forgot_password_screen.dart';

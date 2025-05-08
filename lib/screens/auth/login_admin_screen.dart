@@ -156,7 +156,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                             const SizedBox(height: 20),
                             // Login Button
                             MyButton(
-                              text: 'Login',
+                              text: isLoading ? "Logging you in.." : "Login",
                               isPrimary: true,
                               onPressed: isLoading ? null : _onLoginPressed,
                             ),
