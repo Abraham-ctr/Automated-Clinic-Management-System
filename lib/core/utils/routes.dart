@@ -1,5 +1,6 @@
 import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/medical_form_part1.dart';
 import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/medical_form_part2.dart';
+import 'package:automated_clinic_management_system/screens/features/patient_management/view_patient/view_patient.dart';
 import 'package:automated_clinic_management_system/screens/features/settings/components/notifications_screen.dart';
 import 'package:automated_clinic_management_system/screens/features/settings/settings_screen.dart';
 import 'package:automated_clinic_management_system/screens/landing_screen.dart';
@@ -10,18 +11,18 @@ import 'package:automated_clinic_management_system/screens/auth/register_admin_s
 import 'package:flutter/material.dart';
 
 class AppRoutes {
-static const String landing = '/';
+  static const String landing = '/';
   static const String register = '/register';
   static const String login = '/login';
   static const String forgotPassword = '/forgotPassword';
 
   static const String dashboard = '/dashboard';
   static const String registerPatient = '/registerPatient';
-   static const String registerPatient2 = '/registerPatient2';
+  static const String registerPatient2 = '/registerPatient2';
+  static const String viewPatients = '/viewPatients';
 
   static const String settings = '/settings';
   static const String notifications = '/notifications';
-  
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -29,16 +30,14 @@ static const String landing = '/';
       register: (context) => const RegisterAdminScreen(),
       login: (context) => const LoginAdminScreen(),
       forgotPassword: (context) => const ForgotPasswordScreen(),
-
       dashboard: (context) => const DashboardScreen(),
       registerPatient: (context) => const MedicalFormPart1(),
-      registerPatient2: (context) => const MedicalFormPart2(formData: {},),
-      
-
-
+      registerPatient2: (context) => const MedicalFormPart2(
+            formData: {},
+          ),
+      viewPatients: (context) => const ViewPatient(),
       settings: (context) => const SettingsScreen(),
       notifications: (context) => const NotificationsScreen(),
-
     };
   }
 }

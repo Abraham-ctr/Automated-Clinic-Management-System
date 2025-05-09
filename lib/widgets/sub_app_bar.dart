@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 
-class SubAppBar extends StatelessWidget implements PreferredSizeWidget {
-
+class SubAppBar extends StatelessWidget {
   final String text;
-   const SubAppBar({super.key, required this.text});
+  const SubAppBar({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      title:  Text(
-        text,
-        style: const TextStyle(
-          color: Color(0XFFae9719),
-          fontSize: 25,
-          fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: Text(
+          text,
+          style: const TextStyle(
+            color: Color(0XFFae9719),
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        centerTitle: true,
       ),
-      centerTitle: true,
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(56);
 }

@@ -1,8 +1,8 @@
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/providers/auth_provider.dart';
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
-import 'package:automated_clinic_management_system/widgets/my_button.dart';
-import 'package:automated_clinic_management_system/widgets/my_text_field.dart';
+import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
+import 'package:automated_clinic_management_system/widgets/auth/my_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

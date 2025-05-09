@@ -39,8 +39,14 @@ class MyDrawer extends StatelessWidget {
               SizedBox(
                 height: 200,
                 child: UserAccountsDrawerHeader(
-                  accountEmail: Text(drawerProvider.adminEmail, style: TextStyle(color: Theme.of(context).primaryColor),),
-                  accountName: Text(drawerProvider.adminFullName, style: TextStyle(color: Theme.of(context).primaryColor),),
+                  accountEmail: Text(
+                    drawerProvider.adminEmail,
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                  accountName: Text(
+                    drawerProvider.adminFullName,
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
                   currentAccountPictureSize: const Size(100, 100),
                   currentAccountPicture: CircleAvatar(
                     backgroundColor: AppConstants.priColor,
@@ -56,13 +62,16 @@ class MyDrawer extends StatelessWidget {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildDrawerItem(Icons.dashboard, "Dashboard", AppRoutes.dashboard, context),
+                    _buildDrawerItem(Icons.dashboard, "Dashboard",
+                        AppRoutes.dashboard, context),
                     _buildExpansionTile(
                       Icons.person,
                       "Patient Management",
                       [
-                        _buildDrawerItem(Icons.person_add, "New Patient", '/registerPatient', context),
-                        _buildDrawerItem(Icons.list, "View Patients", '/viewPatient', context),
+                        _buildDrawerItem(Icons.person_add, "New Patient",
+                            '/registerPatient', context),
+                        _buildDrawerItem(Icons.list, "View Patients",
+                            '/viewPatients', context),
                       ],
                       context, // Passing context here
                     ),
@@ -70,8 +79,10 @@ class MyDrawer extends StatelessWidget {
                       Icons.medical_services,
                       "Consultations & Treatments",
                       [
-                        _buildDrawerItem(Icons.add, "New Consultation", '/newConsultation', context),
-                        _buildDrawerItem(Icons.visibility, "View Consultations", '/viewConsultations', context),
+                        _buildDrawerItem(Icons.add, "New Consultation",
+                            '/newConsultation', context),
+                        _buildDrawerItem(Icons.visibility, "View Consultations",
+                            '/viewConsultations', context),
                       ],
                       context, // Passing context here
                     ),
@@ -79,14 +90,19 @@ class MyDrawer extends StatelessWidget {
                       Icons.inventory,
                       "Drug & Inventory",
                       [
-                        _buildDrawerItem(Icons.add_box, "Add New Drug", '/addDrug', context),
-                        _buildDrawerItem(Icons.store, "View Stock", '/viewStock', context),
+                        _buildDrawerItem(
+                            Icons.add_box, "Add New Drug", '/addDrug', context),
+                        _buildDrawerItem(
+                            Icons.store, "View Stock", '/viewStock', context),
                       ],
                       context, // Passing context here
                     ),
-                    _buildDrawerItem(Icons.notifications, "Notifications & Alerts", '/notifications', context),
-                    _buildDrawerItem(Icons.bar_chart, "Reports & Analytics", '/reports', context),
-                    _buildDrawerItem(Icons.settings, "Settings", AppRoutes.settings, context),
+                    _buildDrawerItem(Icons.notifications,
+                        "Notifications & Alerts", '/notifications', context),
+                    _buildDrawerItem(Icons.bar_chart, "Reports & Analytics",
+                        '/reports', context),
+                    _buildDrawerItem(Icons.settings, "Settings",
+                        AppRoutes.settings, context),
                   ],
                 ),
               ),
@@ -96,15 +112,18 @@ class MyDrawer extends StatelessWidget {
                 leading: const Icon(Icons.logout, color: Colors.red),
                 title: const Text(
                   "Logout",
-                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 onTap: () async {
                   // Call the logout method
                   await FirebaseAuth.instance.signOut(); // Firebase sign out
                   // Optionally reset the user data in the provider
-                  Provider.of<DrawerProvider>(context, listen: false).setUserData('', '', '', '');
+                  Provider.of<DrawerProvider>(context, listen: false)
+                      .setUserData('', '', '', '');
                   // Navigate to login screen
-                  Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/login', (route) => false);
                 },
               ),
             ],
@@ -115,14 +134,17 @@ class MyDrawer extends StatelessWidget {
   }
 
   // **Build Drawer Item**: A function to build each list item in the sidebar
-  Widget _buildDrawerItem(IconData icon, String title, String route, BuildContext context) {
+  Widget _buildDrawerItem(
+      IconData icon, String title, String route, BuildContext context) {
     // Get the current route
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      textColor: currentRoute == route ? Colors.blue : null, // Change text color for active route
+      textColor: currentRoute == route
+          ? Colors.blue
+          : null, // Change text color for active route
       onTap: () {
         Navigator.pop(context);
         Navigator.pushNamed(context, route);
@@ -131,14 +153,17 @@ class MyDrawer extends StatelessWidget {
   }
 
   // **Build Expansion Tile**: A function to build each expandable section in the sidebar
-  Widget _buildExpansionTile(IconData icon, String title, List<Widget> children, BuildContext context) {
+  Widget _buildExpansionTile(IconData icon, String title, List<Widget> children,
+      BuildContext context) {
     // Get the current route
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     return ExpansionTile(
       leading: Icon(icon),
       title: Text(title),
-      textColor: currentRoute == title ? Colors.blue.shade100 : null, // Highlight active expansion tile
+      textColor: currentRoute == title
+          ? Colors.blue.shade100
+          : null, // Highlight active expansion tile
       childrenPadding: const EdgeInsets.only(left: 20),
       children: children,
     );

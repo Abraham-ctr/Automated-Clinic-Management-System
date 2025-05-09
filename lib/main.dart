@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => DrawerProvider()),
         Provider(create: (context) => DrawerService()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: Consumer<ThemeProvider>(

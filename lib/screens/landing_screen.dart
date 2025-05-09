@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/core/utils/routes.dart';
-import 'package:automated_clinic_management_system/widgets/my_button.dart';
+import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});

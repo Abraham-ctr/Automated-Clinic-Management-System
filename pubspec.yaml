@@ -27,6 +27,8 @@ dependencies:
   path_provider: ^2.1.5
   carousel_slider: ^5.0.0
   firebase_messaging: ^15.2.5
+  dropdown_search: ^6.0.2
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:

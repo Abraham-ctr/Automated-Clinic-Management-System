@@ -5,7 +5,7 @@ import 'package:automated_clinic_management_system/providers/user_provider.dart'
 import 'package:automated_clinic_management_system/screens/dashboard/components/date_time_display.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/my_carousel.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/welcome_text.dart';
-import 'package:automated_clinic_management_system/widgets/feature_card.dart';
+import 'package:automated_clinic_management_system/screens/dashboard/components/feature_card.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
