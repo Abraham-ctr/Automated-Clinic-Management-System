@@ -8,7 +8,7 @@ class Patient {
   final String registrationNumber;
   final String department;
   final String course;
-  final Map<String, dynamic> part1Data; // Holds Part 1 fields (optional, based on your setup)
+  // final Map<String, dynamic> part1Data; // Holds Part 1 fields (optional, based on your setup)
 
   // Part 2 fields
   final int heightMeters;
@@ -64,7 +64,7 @@ class Patient {
     required this.registrationNumber,
     required this.department,
     required this.course,
-    required this.part1Data,
+    // required this.part1Data,
     required this.heightMeters,
     required this.heightCm,
     required this.weightKg,
@@ -120,7 +120,7 @@ class Patient {
       'registrationNumber': registrationNumber,
       'department': department,
       'course': course,
-      'part1Data': part1Data,
+      // 'part1Data': part1Data,
       'heightMeters': heightMeters,
       'heightCm': heightCm,
       'weightKg': weightKg,
@@ -177,7 +177,7 @@ class Patient {
       registrationNumber: map['registrationNumber'],
       department: map['department'],
       course: map['course'],
-      part1Data: Map<String, dynamic>.from(map['part1Data']),
+      
       heightMeters: map['heightMeters'],
       heightCm: map['heightCm'],
       weightKg: map['weightKg'],

@@ -1,9 +1,12 @@
+import 'package:automated_clinic_management_system/core/utils/snackbar_helper.dart';
 import 'package:automated_clinic_management_system/core/utils/utilities.dart';
-import 'package:automated_clinic_management_system/providers/auth_provider.dart';
+import 'package:automated_clinic_management_system/providers/auth_provider.dart'
+    as my_auth;
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_dropdown_field.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,42 +65,58 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
     }
     setState(() => isLoading = true);
 
-    try {
-      // 1) attempt registration
-      await context.read<AuthProvider>().register(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
-            surname: capitalizeAndTrim(_surnameController.text),
-            firstName: capitalizeAndTrim(_firstNameController.text),
-            middleName: capitalizeAndTrim(_middleNameController.text),
-            phoneNumber: _phoneController.text.trim(),
-            regNumber: _regNumberController.text.toUpperCase().trim(),
-            gender: _gender,
-            role: _role,
-          );
+    final authProvider =
+        Provider.of<my_auth.AuthProvider>(context, listen: false);
 
-      // 2) get the provider to inspect error/success
-      final auth = context.read<AuthProvider>();
-      if (auth.errorMessage != null) {
-        // Show the error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(auth.errorMessage!)),
-        );
-      } else {
-        // Navigate away on success
+    try {
+      await authProvider.registerUser(
+        surname: capitalizeAndTrim(_surnameController.text),
+        firstName: capitalizeAndTrim(_firstNameController.text),
+        middleName: capitalizeAndTrim(_middleNameController.text),
+        email: _emailController.text.trim(),
+        phoneNumber: addPrefixToPhoneNumber(_phoneController.text),
+        regNumber: _regNumberController.text.trim().toUpperCase(),
+        gender: _gender,
+        role: _role,
+        password: _passwordController.text.trim(),
+      );
+
+      if (mounted) {
+        showSnackBar(context, 'Registration successful. Please log in.',
+            type: SnackbarType.success);
         Navigator.pushReplacementNamed(context, '/login');
       }
-    } catch (e, st) {
-      // Unexpected failure (shouldn’t normally happen)
-      debugPrint('🔥 Registration exception: $e\n$st');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Unexpected error: ${e.toString()}')),
-      );
-    } finally {
-      // ALWAYS turn off the loader
+    } on FirebaseAuthException catch (e) {
       if (mounted) {
-        setState(() => isLoading = false);
+        showSnackBar(context, _firebaseErrorMessage(e.code));
+        print('Registration error: $e');
       }
+    } catch (e) {
+      if (mounted) {
+        showSnackBar(context, 'An unexpected error occurred');
+        print('Registration error: $e');
+      }
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
+  String _firebaseErrorMessage(String errorCode) {
+    switch (errorCode) {
+      case 'invalid-email':
+        return 'The email address is badly formatted.';
+      case 'user-disabled':
+        return 'This user has been disabled.';
+      case 'user-not-found':
+        return 'No user found with this email.';
+      case 'wrong-password':
+        return 'Incorrect password provided.';
+      case 'email-already-in-use':
+        return 'This email is already registered.';
+      case 'weak-password':
+        return 'Password is too weak.';
+      default:
+        return 'An unknown error occurred.';
     }
   }
 
@@ -127,6 +146,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
                         controller: _scrollController,
                         child: Form(
                           key: _formKey,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           child: Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
@@ -294,7 +314,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
                                     isRequired: true,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Password is required';
+                                        return 'Confirm Password is required';
                                       } else if (value !=
                                           _passwordController.text) {
                                         return 'Passwords do not match';

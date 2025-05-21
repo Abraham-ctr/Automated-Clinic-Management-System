@@ -51,6 +51,7 @@ class CourseDropdown extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
+          enabled: courses.isNotEmpty,
           labelText: 'Course',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),

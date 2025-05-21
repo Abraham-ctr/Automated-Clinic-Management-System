@@ -10,10 +10,11 @@ import 'package:provider/provider.dart';
 class MyDrawer extends StatelessWidget {
   MyDrawer({super.key});
   final DrawerService drawerService = DrawerService();
-  // final authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
+    Future.microtask(() => drawerService.fetchUserData(context));
+
     return Consumer<DrawerProvider>(
       builder: (context, drawerProvider, child) {
         // Show loading indicator while fetching user data
@@ -25,11 +26,45 @@ class MyDrawer extends StatelessWidget {
 
         // If there's an error message, show a SnackBar
         if (drawerProvider.errorMessage.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(drawerProvider.errorMessage)),
-            );
-          });
+          return Drawer(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error, color: Colors.red, size: 60),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Something went wrong',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      drawerProvider.errorMessage,
+                      textAlign: TextAlign.center,
+                      style:
+                          const TextStyle(fontSize: 14, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        // Retry fetching user data
+                        drawerProvider.clearError();
+                        DrawerService().fetchUserData(context);
+                      },
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Retry'),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
         }
 
         return Drawer(
@@ -73,7 +108,8 @@ class MyDrawer extends StatelessWidget {
                         _buildDrawerItem(Icons.list, "View Patients",
                             '/viewPatients', context),
                       ],
-                      context, // Passing context here
+                      ['/registerPatient', '/viewPatients'],
+                      context,
                     ),
                     _buildExpansionTile(
                       Icons.medical_services,
@@ -84,7 +120,8 @@ class MyDrawer extends StatelessWidget {
                         _buildDrawerItem(Icons.visibility, "View Consultations",
                             '/viewConsultations', context),
                       ],
-                      context, // Passing context here
+                      ['/newConsultation', '/viewConsultations'], // 🔹 Add this
+                      context,
                     ),
                     _buildExpansionTile(
                       Icons.inventory,
@@ -95,7 +132,8 @@ class MyDrawer extends StatelessWidget {
                         _buildDrawerItem(
                             Icons.store, "View Stock", '/viewStock', context),
                       ],
-                      context, // Passing context here
+                      ['/addDrug', '/viewStock'], // 🔹 Add this
+                      context,
                     ),
                     _buildDrawerItem(Icons.notifications,
                         "Notifications & Alerts", '/notifications', context),
@@ -153,17 +191,26 @@ class MyDrawer extends StatelessWidget {
   }
 
   // **Build Expansion Tile**: A function to build each expandable section in the sidebar
-  Widget _buildExpansionTile(IconData icon, String title, List<Widget> children,
-      BuildContext context) {
-    // Get the current route
+  Widget _buildExpansionTile(
+    IconData icon,
+    String title,
+    List<Widget> children,
+    List<String> childRoutes,
+    BuildContext context,
+  ) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
+    final isExpanded = childRoutes.contains(currentRoute);
 
     return ExpansionTile(
-      leading: Icon(icon),
-      title: Text(title),
-      textColor: currentRoute == title
-          ? Colors.blue.shade100
-          : null, // Highlight active expansion tile
+      leading: Icon(icon, color: isExpanded ? Colors.blue : null),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isExpanded ? Colors.blue : null,
+          fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      initiallyExpanded: isExpanded,
       childrenPadding: const EdgeInsets.only(left: 20),
       children: children,
     );

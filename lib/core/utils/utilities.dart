@@ -10,6 +10,7 @@ String capitalizeAndTrim(String text) {
   }).join(' ');
   
 }
+
 String addPrefixToPhoneNumber(String phoneNumber) {
   phoneNumber = phoneNumber.trim();  // Trim leading/trailing spaces
   

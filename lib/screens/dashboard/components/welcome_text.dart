@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:automated_clinic_management_system/providers/user_provider.dart'; // UserProvider
+import 'package:automated_clinic_management_system/providers/user_profile_provider.dart'; // UserProvider
 
 class WelcomeText extends StatelessWidget {
   const WelcomeText({super.key});
@@ -8,7 +8,7 @@ class WelcomeText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Accessing the UserProvider using Consumer
-    return Consumer<UserProvider>(
+    return Consumer<UserProfileProvider>(
       builder: (context, userProvider, child) {
         // Fetch user data if it's not already fetched
         if (userProvider.isLoading) {

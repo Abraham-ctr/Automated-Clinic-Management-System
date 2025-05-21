@@ -27,8 +27,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     if (!mounted) return;
 
-    final message = auth.errorMessage ?? "Password reset link sent!";
     final isError = auth.status == AuthStatus.error;
+    final message = isError ? auth.errorMessage! : "Password reset link sent!";
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -38,6 +38,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
 
     setState(() => isLoading = false);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
   }
 
   @override

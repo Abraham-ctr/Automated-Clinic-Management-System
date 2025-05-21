@@ -1,4 +1,5 @@
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:automated_clinic_management_system/providers/auth_provider.dart';
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
@@ -23,29 +24,33 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _onLoginPressed() async {
+    // 1. Validate form
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => isLoading = true);
-    final auth = context.read<AuthProvider>();
+    // 2. Grab provider
+    final auth = Provider.of<AuthProvider>(context, listen: false);
 
-    await auth.login(
+    // 3. Show loading state
+    setState(() => isLoading = true);
+
+    // 4. Perform login
+    await auth.loginUser(
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
     );
 
-    if (!mounted) return;
+    // 5. Hide loading
+    if (mounted) setState(() => isLoading = false);
 
-    if (auth.errorMessage != null) {
-      // Display error message in SnackBar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.errorMessage!)),
-      );
-    } else if (auth.status == AuthStatus.authenticated) {
-      // Navigate to dashboard if login is successful
-      Navigator.pushReplacementNamed(context, '/dashboard');
+    // 6. Check for error
+    if (auth.error != null) {
+      // Show snackbar with the FirebaseAuthException message
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(auth.error!)));
+    } else {
+      // Success! Navigate to dashboard (replace back stack)
+      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
     }
-
-    setState(() => isLoading = false);
   }
 
   @override

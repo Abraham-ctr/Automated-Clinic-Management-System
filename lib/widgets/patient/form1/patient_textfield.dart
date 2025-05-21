@@ -5,7 +5,6 @@ class PatientTextfield extends StatelessWidget {
   final String label;
   final bool isRequired;
   final bool isNumeric;
-  final bool isDate;
 
   const PatientTextfield({
     super.key,
@@ -13,7 +12,6 @@ class PatientTextfield extends StatelessWidget {
     required this.label,
     this.isRequired = false,
     this.isNumeric = false,
-    this.isDate = false,
   });
 
   @override
@@ -23,7 +21,6 @@ class PatientTextfield extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-        readOnly: isDate,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),

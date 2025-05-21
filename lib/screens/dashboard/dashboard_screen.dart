@@ -1,7 +1,7 @@
 import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/providers/auth_provider.dart';
-import 'package:automated_clinic_management_system/providers/user_provider.dart';
+import 'package:automated_clinic_management_system/providers/user_profile_provider.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/date_time_display.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/my_carousel.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/welcome_text.dart';
@@ -29,14 +29,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch user data as soon as the DashboardScreen is loaded
-    Future.delayed(Duration.zero, () {
-      Provider.of<UserProvider>(context, listen: false).fetchUserData();
+    // after first frame, fetch user profile
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProfileProvider>().fetchUserData();
+      DrawerService().fetchUserData(context); // if you still need this
     });
-
-    // Fetch user data when the DashboardScreen is initialized
-    final drawerService = DrawerService();
-    drawerService.fetchUserData(context);
   }
 
   @override

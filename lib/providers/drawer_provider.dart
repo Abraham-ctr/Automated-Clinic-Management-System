@@ -8,7 +8,8 @@ class DrawerProvider with ChangeNotifier {
   bool isLoading = true;
   String errorMessage = '';
 
-  void setUserData(String firstName, String middleName, String surname, String email) {
+  void setUserData(
+      String firstName, String middleName, String surname, String email) {
     adminFirstName = firstName;
     adminEmail = email;
     adminFullName = "$surname $firstName $middleName";
@@ -20,6 +21,12 @@ class DrawerProvider with ChangeNotifier {
   void setError(String error) {
     errorMessage = error;
     isLoading = false;
+    notifyListeners();
+  }
+
+  void clearError() {
+    errorMessage = '';
+    isLoading = true;
     notifyListeners();
   }
 }

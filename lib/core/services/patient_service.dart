@@ -1,100 +1,56 @@
-import 'package:automated_clinic_management_system/models/patient_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientService {
-  final CollectionReference _patientRef =
-      FirebaseFirestore.instance.collection('patients');
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Saving a Patient to Firestore
-  Future<void> addPatient(Patient patient) async {
+  /// Save Part 1 of the medical form to patients/{patientId}/form1
+  Future<void> saveForm1({
+    required String patientId,
+    required Map<String, dynamic> form1Data,
+  }) async {
     try {
-      // Add without ID first to let Firestore generate it
-      DocumentReference docRef = await _patientRef.add(patient.toMap());
-
-      // Then update the document with its own ID as 'id' field
-      await docRef.update({'id': docRef.id});
+      await _firestore.collection('patients').doc(patientId).set({
+        'form1': form1Data,
+      }, SetOptions(merge: true)); // merge = don’t overwrite form2
     } catch (e) {
-      rethrow;
+      throw Exception('Failed to save Form 1: $e');
     }
   }
 
-  // Fetching All Patients
-  Future<List<Patient>> getAllPatients() async {
+  /// Save Part 2 of the medical form to patients/{patientId}/form2
+  Future<void> saveForm2({
+    required String patientId,
+    required Map<String, dynamic> form2Data,
+  }) async {
     try {
-      QuerySnapshot snapshot = await _patientRef.get();
-      return snapshot.docs
-          .map((doc) => Patient.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
+      await _firestore.collection('patients').doc(patientId).set({
+        'form2': form2Data,
+      }, SetOptions(merge: true)); // merge = don’t overwrite form1
     } catch (e) {
-      rethrow;
+      throw Exception('Failed to save Form 2: $e');
     }
   }
 
-  // Fetching a Single Patient by ID
-  Future<Patient?> getPatientById(String id) async {
+  /// Optional: Get both forms' data (form1 + form2) for a patient
+  Future<Map<String, dynamic>?> getPatientForms(String patientId) async {
     try {
-      DocumentSnapshot doc = await _patientRef.doc(id).get();
-      if (doc.exists) {
-        return Patient.fromMap(doc.data() as Map<String, dynamic>);
-      } else {
-        return null;
+      final docSnapshot =
+          await _firestore.collection('patients').doc(patientId).get();
+      if (docSnapshot.exists) {
+        return docSnapshot.data();
       }
+      return null;
     } catch (e) {
-      rethrow;
+      throw Exception('Failed to get patient data: $e');
     }
   }
 
-  // Updating a Patient
-  Future<void> updatePatient(Patient patient) async {
+  /// Optional: Delete a patient entirely
+  Future<void> deletePatient(String patientId) async {
     try {
-      await _patientRef.doc(patient.id).update(patient.toMap());
+      await _firestore.collection('patients').doc(patientId).delete();
     } catch (e) {
-      rethrow;
-    }
-  }
-
-  // Deleting a Patient
-  Future<void> deletePatient(String id) async {
-    try {
-      await _patientRef.doc(id).delete();
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  // Search by Registration Number
-  Future<Patient?> searchByRegistrationNumber(String regNo) async {
-    try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('patients')
-          .where('registrationNumber', isEqualTo: regNo)
-          .limit(1)
-          .get();
-
-      if (snapshot.docs.isNotEmpty) {
-        return Patient.fromMap(
-            snapshot.docs.first.data() as Map<String, dynamic>);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  // Filter by Department
-  Future<List<Patient>> filterByDepartment(String department) async {
-    try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('patients')
-          .where('department', isEqualTo: department)
-          .get();
-
-      return snapshot.docs
-          .map((doc) => Patient.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      rethrow;
+      throw Exception('Failed to delete patient: $e');
     }
   }
 }
