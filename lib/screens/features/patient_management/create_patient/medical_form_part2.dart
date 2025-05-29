@@ -1,19 +1,35 @@
+import 'package:automated_clinic_management_system/core/services/patient_service.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/blood_test_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/chest_xray_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/eyes_resp_pharynx_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/final_form_section.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/hearing_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/heart_and_BP_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/height_weight_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/hernia_reflex_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/lungs_teeth_liver_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/lymph_spleen_skin_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/stool_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/urine_fields.dart';
-import 'package:automated_clinic_management_system/widgets/patient/form2/visual_acuity_fields.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/blood_group_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/date_field.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/eyes_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/genotype_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/hearing_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/form2_patient_textfield.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/heart_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/hernia_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/hospital_address_field.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/liver_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/lungs.dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/lymphatic_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/medical_officer_field.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/microscope_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/occult_blood_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/other_observation_field.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/ova_or_cyst_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/papillary_reflex_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/pharynx_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/remarks_field.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/respiratory_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/skin_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/spinal_reflex_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/spleen_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/teeth_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/urine_albumin_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/urine_protein_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/urine_sugar_dropdown.dart';
+import 'package:automated_clinic_management_system/widgets/patient/form2/vdrl_test_dropdown.dart';
 import 'package:automated_clinic_management_system/widgets/sub_app_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MedicalFormPart2 extends StatefulWidget {
@@ -26,121 +42,47 @@ class MedicalFormPart2 extends StatefulWidget {
 
 class _MedicalFormPart2State extends State<MedicalFormPart2> {
   final _formKey = GlobalKey<FormState>();
+  final PatientService _patientService = PatientService();
+  final Map<String, dynamic> form2Data = {};
 
   String? _hearingLeft;
   String? _hearingRight;
+
   String? _heart;
-  String _bloodPressure = '';
+
   String? _eyes;
   String? _respSystem;
   String? _pharynx;
+
   String? _lungs;
   String? _teeth;
   String? _liver;
+
   String? _lymphaticGlands;
   String? _spleen;
   String? _skin;
+
   String? _hernia;
   String? _papillaryReflex;
   String? _spinalReflex;
+
   String? _urineAlbumin;
   String? _urineSugar;
   String? _urineProtein;
+
   String? _stoolOccultBlood;
   String? _stoolMicroscope;
   String? _stoolOvaOrCyst;
-  String? _bloodHb;
+
   String? _bloodGroup;
   String? _genotype;
   String? _vdrlTest;
-  String? _xrayFilmNo;
-  String? _xrayHospital;
-  String? _xrayReport;
+
+  String? _otherObservation;
   DateTime? _date;
-  String? _otherObs;
   String? _remarks;
-  String? _officerName;
-  String? _hospitalAddr;
-
-  Future<void> _saveForm2() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    // Collect data into a map
-    final form2Data = {
-      'heightMeters': int.tryParse(_heightMetersController.text) ?? 0,
-      'heightCm': int.tryParse(_heightCmcontroller.text) ?? 0,
-      'weightKg': int.tryParse(_weightKgController.text) ?? 0,
-      'weightG': int.tryParse(_weightGController.text) ?? 0,
-      'visualAcuityWithoutGlassesRight': _withoutGlassesRightController.text,
-      'visualAcuityWithoutGlassesLeft': _withoutGlassesLeftController.text,
-      'visualAcuityWithGlassesRight': _withGlassesRightController.text,
-      'visualAcuityWithGlassesLeft': _withGlassesLeftController.text,
-      'hearingLeft': _hearingLeft ?? '',
-      'hearingRight': _hearingRight ?? '',
-      'heart': _heart ?? '',
-      'bloodPressure': _bloodPressure,
-      'eyes': _eyes ?? '',
-      'respiratorySystem': _respSystem ?? '',
-      'pharynx': _pharynx ?? '',
-      'lungs': _lungs ?? '',
-      'teeth': _teeth ?? '',
-      'liver': _liver ?? '',
-      'lymphaticGlands': _lymphaticGlands ?? '',
-      'spleen': _spleen ?? '',
-      'skin': _skin ?? '',
-      'hernia': _hernia ?? '',
-      'papillaryReflex': _papillaryReflex ?? '',
-      'spinalReflex': _spinalReflex ?? '',
-      'urineAlbumin': _urineAlbumin ?? '',
-      'urineSugar': _urineSugar ?? '',
-      'urineProtein': _urineProtein ?? '',
-      'stoolOccultBlood': _stoolOccultBlood ?? '',
-      'stoolMicroscope': _stoolMicroscope ?? '',
-      'stoolOvaOrCyst': _stoolOvaOrCyst ?? '',
-      'bloodHb': _bloodHb ?? '',
-      'bloodGroup': _bloodGroup ?? '',
-      'genotype': _genotype ?? '',
-      'vdrlTest': _vdrlTest ?? '',
-      'chestXRayFilmNo': _xrayFilmNo ?? '',
-      'chestXRayHospital': _xrayHospital ?? '',
-      'chestXRayReport': _xrayReport ?? '',
-      'otherObservation': _otherObs ?? '',
-      'remarks': _remarks ?? '',
-      'date': _date?.toIso8601String(),
-      'medicalOfficerName': _officerName ?? '',
-      'hospitalAddress': _hospitalAddr ?? '',
-    };
-    print('Form Data: $form2Data');
-
-    final String patientId = widget.formData['matricNumber'] ?? '';
-
-    if (patientId.isEmpty) {
-      // Show error: patientId is required
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Patient ID is missing. Cannot save form.')),
-      );
-      return;
-    }
-
-    try {
-      final docRef =
-          FirebaseFirestore.instance.collection('patients').doc(patientId);
-
-      await docRef.set({
-        'form2': form2Data,
-      }, SetOptions(merge: true)); // merge: true to not overwrite other data
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Form 2 saved successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving form: $e')),
-      );
-    }
-  }
+  String? _medicalOfficerName;
+  String? _hospitalAddress;
 
   // CONTROLLERS
   final TextEditingController _heightMetersController = TextEditingController();
@@ -157,6 +99,123 @@ class _MedicalFormPart2State extends State<MedicalFormPart2> {
       TextEditingController();
   final TextEditingController _withGlassesLeftController =
       TextEditingController();
+  final TextEditingController _bloodPressureController =
+      TextEditingController();
+
+  final TextEditingController _bloodHbController = TextEditingController();
+
+  final TextEditingController _xrayFilmNoController = TextEditingController();
+  final TextEditingController _xrayHospitalController = TextEditingController();
+  final TextEditingController _xrayReportController = TextEditingController();
+
+  Future<void> _saveForm2() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Prepare data map for Firestore
+    final Map<String, dynamic> form2DataMap = {
+      'height': {
+        'meters': _heightMetersController.text.trim(),
+        'centimeters': _heightCmcontroller.text.trim(),
+      },
+      'weight': {
+        'kg': _weightKgController.text.trim(),
+        'grams': _weightGController.text.trim(),
+      },
+      'visualAcuityWithoutGlasses': {
+        'rightEye': _withoutGlassesRightController.text.trim(),
+        'leftEye': _withoutGlassesLeftController.text.trim(),
+      },
+      'visualAcuityWithGlasses': {
+        'rightEye': _withGlassesRightController.text.trim(),
+        'leftEye': _withGlassesLeftController.text.trim(),
+      },
+      'hearing': {
+        'left': _hearingLeft,
+        'right': _hearingRight,
+      },
+      'heart': _heart,
+      'bloodPressure': _bloodPressureController.text.trim(),
+      'eyes': _eyes,
+      'respiratorySystem': _respSystem,
+      'pharynx': _pharynx,
+      'lungs': _lungs,
+      'teeth': _teeth,
+      'liver': _liver,
+      'lymphaticGlands': _lymphaticGlands,
+      'spleen': _spleen,
+      'skin': _skin,
+      'hernia': _hernia,
+      'papillaryReflex': _papillaryReflex,
+      'spinalReflex': _spinalReflex,
+      'urineTestResults': {
+        'albumin': _urineAlbumin,
+        'sugar': _urineSugar,
+        'protein': _urineProtein,
+      },
+      'stoolExamination': {
+        'occultBlood': _stoolOccultBlood,
+        'microscope': _stoolMicroscope,
+        'ovaOrCyst': _stoolOvaOrCyst,
+      },
+      'bloodTests': {
+        'hemoglobin': _bloodHbController.text.trim(),
+        'bloodGroup': _bloodGroup,
+        'genotype': _genotype,
+        'vdrlTest': _vdrlTest,
+      },
+      'chestXray': {
+        'filmNumber': _xrayFilmNoController.text.trim(),
+        'hospitalName': _xrayHospitalController.text.trim(),
+        'report': _xrayReportController.text.trim(),
+      },
+      'otherObservations': _otherObservation,
+      'remarks': _remarks,
+      'date': _date?.toIso8601String(), // store as ISO string or Timestamp
+      'medicalOfficerName': _medicalOfficerName,
+      'hospitalAddress': _hospitalAddress,
+    };
+    print('Form Data: $form2DataMap');
+
+    final String patientId = widget.formData['matricNumber'] ?? '';
+
+    if (patientId.isEmpty) {
+      // Show error: patientId is required
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Patient ID is missing. Cannot save form.')),
+      );
+      return;
+    }
+
+    try {
+      final String patientId = widget.formData['matricNumber'];
+
+      await _patientService.saveForm2(
+          patientId: patientId, form2Data: form2Data);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Form 2 saved successfully!',
+            style: TextStyle(color: Colors.green),
+          ),
+        ),
+      );
+
+      Navigator.pop(context); // Or push to summary screen
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Error saving Form 2: $e',
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,149 +238,588 @@ class _MedicalFormPart2State extends State<MedicalFormPart2> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            HeightWeightFields(
-                                heightMetersController: _heightMetersController,
-                                heightCmController: _heightCmcontroller,
-                                weightKgController: _weightKgController,
-                                weightGController: _weightGController),
-                            VisualAcuityFields(
-                                withoutGlassesRightController:
-                                    _withoutGlassesRightController,
-                                withoutGlassesLeftController:
-                                    _withoutGlassesLeftController,
-                                withGlassesRightController:
-                                    _withGlassesRightController,
-                                withGlassesLeftController:
-                                    _withGlassesLeftController),
-                            HearingFields(
-                              hearingLeft: _hearingLeft,
-                              hearingRight: _hearingRight,
-                              onLeftChanged: (val) =>
-                                  setState(() => _hearingLeft = val),
-                              onRightChanged: (val) =>
-                                  setState(() => _hearingRight = val),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      const Text("Height",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Flexible(
+                                            child: Form2PatientTextfield(
+                                                controller:
+                                                    _heightMetersController,
+                                                label: "Height in meters"),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Flexible(
+                                            child: Form2PatientTextfield(
+                                                controller: _heightCmcontroller,
+                                                label: "Height in centimeters"),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Flexible(
+                                    child: Column(
+                                  children: [
+                                    const Text("Weight",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                          child: Form2PatientTextfield(
+                                              controller: _weightKgController,
+                                              label: "Weight in kg"),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Flexible(
+                                          child: Form2PatientTextfield(
+                                              controller: _weightGController,
+                                              label: "Weight in grams"),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )),
+                              ],
                             ),
-                            HeartAndBPFields(
-                              heart: _heart,
-                              bloodPressure: _bloodPressure,
-                              onHeartChanged: (val) =>
-                                  setState(() => _heart = val),
-                              onBloodPressureChanged: (val) =>
-                                  setState(() => _bloodPressure = val),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      const Text(
+                                          "Visual Acuity Without Glasses",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Flexible(
+                                            child: Form2PatientTextfield(
+                                                controller:
+                                                    _withoutGlassesRightController,
+                                                label: "Right Eye e.g: (6/6)"),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Flexible(
+                                            child: Form2PatientTextfield(
+                                                controller:
+                                                    _withoutGlassesLeftController,
+                                                label: "Left Eye: (6/6)"),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Flexible(
+                                    child: Column(
+                                  children: [
+                                    const Text("Visual Acuity With Glasses",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(
+                                      height: 7,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                          child: Form2PatientTextfield(
+                                              controller:
+                                                  _withGlassesRightController,
+                                              label: "Right Eye e.g: (6/6)"),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Flexible(
+                                          child: Form2PatientTextfield(
+                                              controller:
+                                                  _withGlassesLeftController,
+                                              label: "Left Eye e.g: (6/6)"),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )),
+                              ],
                             ),
-                            EyesRespPharynxFields(
-                              eyes: _eyes,
-                              respiratorySystem: _respSystem,
-                              pharynx: _pharynx,
-                              onEyesChanged: (val) =>
-                                  setState(() => _eyes = val),
-                              onRespChanged: (val) =>
-                                  setState(() => _respSystem = val),
-                              onPharynxChanged: (val) =>
-                                  setState(() => _pharynx = val),
+                            Column(
+                              children: [
+                                const Text("Hearing",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: HearingDropdown(
+                                        label: "Left",
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _hearingLeft = value;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: HearingDropdown(
+                                        label: "Right",
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _hearingRight = value;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            LungsTeethLiverFields(
-                              lungs: _lungs,
-                              teeth: _teeth,
-                              liver: _liver,
-                              onLungsChanged: (val) =>
-                                  setState(() => _lungs = val),
-                              onTeethChanged: (val) =>
-                                  setState(() => _teeth = val),
-                              onLiverChanged: (val) =>
-                                  setState(() => _liver = val),
+                            Column(
+                              children: [
+                                const Text("Heart & Blood Pressure",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: HeartDropdown(
+                                          value: _heart,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _heart = value;
+                                            });
+                                          }),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: Form2PatientTextfield(
+                                        controller: _bloodPressureController,
+                                        label: "Blood Pressure",
+                                        isRequired: true,
+                                        isNumeric: true,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            LymphSpleenSkinFields(
-                              lymphaticGlands: _lymphaticGlands,
-                              spleen: _spleen,
-                              skin: _skin,
-                              onLymphChanged: (val) =>
-                                  setState(() => _lymphaticGlands = val),
-                              onSpleenChanged: (val) =>
-                                  setState(() => _spleen = val),
-                              onSkinChanged: (val) =>
-                                  setState(() => _skin = val),
+                            Column(
+                              children: [
+                                const Text("Eyes, Respiratory System, Pharynx",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: EyesDropdown(
+                                          value: _eyes,
+                                          onChanged: (val) =>
+                                              setState(() => _eyes = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: RespiratoryDropdown(
+                                          value: _respSystem,
+                                          onChanged: (val) => setState(
+                                              () => _respSystem = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: PharynxDropdown(
+                                          value: _pharynx,
+                                          onChanged: (val) =>
+                                              setState(() => _pharynx = val)),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            HerniaReflexFields(
-                              hernia: _hernia,
-                              papillaryReflex: _papillaryReflex,
-                              spinalReflex: _spinalReflex,
-                              onHerniaChanged: (val) =>
-                                  setState(() => _hernia = val),
-                              onPapillaryChanged: (val) =>
-                                  setState(() => _papillaryReflex = val),
-                              onSpinalChanged: (val) =>
-                                  setState(() => _spinalReflex = val),
+                            Column(
+                              children: [
+                                const Text("Lungs, Teeth, Liver",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: LungsDropdown(
+                                          value: _lungs,
+                                          onChanged: (val) =>
+                                              setState(() => _lungs = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: TeethDropdown(
+                                          value: _teeth,
+                                          onChanged: (val) =>
+                                              setState(() => _teeth = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: LiverDropdown(
+                                          value: _liver,
+                                          onChanged: (val) =>
+                                              setState(() => _liver = val)),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            UrineFields(
-                              albumin: _urineAlbumin,
-                              sugar: _urineSugar,
-                              protein: _urineProtein,
-                              onAlbuminChanged: (val) =>
-                                  setState(() => _urineAlbumin = val),
-                              onSugarChanged: (val) =>
-                                  setState(() => _urineSugar = val),
-                              onProteinChanged: (val) =>
-                                  setState(() => _urineProtein = val),
+                            Column(
+                              children: [
+                                const Text("Lymphatic Glands, Spleen, Skin",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: LymphaticDropdown(
+                                          value: _lymphaticGlands,
+                                          onChanged: (val) => setState(
+                                              () => _lymphaticGlands = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: SpleenDropdown(
+                                          value: _spleen,
+                                          onChanged: (val) =>
+                                              setState(() => _spleen = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: SkinDropdown(
+                                          value: _skin,
+                                          onChanged: (val) =>
+                                              setState(() => _skin = val)),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            StoolFields(
-                              occultBlood: _stoolOccultBlood,
-                              microscope: _stoolMicroscope,
-                              ovaOrCyst: _stoolOvaOrCyst,
-                              onOccultBloodChanged: (val) =>
-                                  setState(() => _stoolOccultBlood = val),
-                              onMicroscopeChanged: (val) =>
-                                  setState(() => _stoolMicroscope = val),
-                              onOvaOrCystChanged: (val) =>
-                                  setState(() => _stoolOvaOrCyst = val),
+                            Column(
+                              children: [
+                                const Text("Hernia & Reflexes",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: HerniaDropdown(
+                                          value: _hernia,
+                                          onChanged: (val) =>
+                                              setState(() => _hernia = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: PapillaryReflexDropdown(
+                                          value: _papillaryReflex,
+                                          onChanged: (val) => setState(
+                                              () => _papillaryReflex = val)),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: SpinalReflexDropdown(
+                                          value: _spinalReflex,
+                                          onChanged: (val) => setState(
+                                              () => _spinalReflex = val)),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            BloodTestFields(
-                              bloodHb: _bloodHb,
-                              bloodGroup: _bloodGroup,
-                              genotype: _genotype,
-                              vdrlTest: _vdrlTest,
-                              onBloodHbChanged: (val) =>
-                                  setState(() => _bloodHb = val),
-                              onBloodGroupChanged: (val) =>
-                                  setState(() => _bloodGroup = val),
-                              onGenotypeChanged: (val) =>
-                                  setState(() => _genotype = val),
-                              onVdrlTestChanged: (val) =>
-                                  setState(() => _vdrlTest = val),
+                            Column(
+                              children: [
+                                const Text("Urine Test Results",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: UrineAlbuminDropdown(
+                                        value: _urineAlbumin,
+                                        onChanged: (val) =>
+                                            setState(() => _urineAlbumin = val),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: UrineSugarDropdown(
+                                        value: _urineSugar,
+                                        onChanged: (val) =>
+                                            setState(() => _urineSugar = val),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: UrineProteinDropdown(
+                                        value: _urineProtein,
+                                        onChanged: (val) =>
+                                            setState(() => _urineProtein = val),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            ChestXRayFields(
-                              filmNo: _xrayFilmNo,
-                              hospital: _xrayHospital,
-                              report: _xrayReport,
-                              onFilmNoChanged: (val) =>
-                                  setState(() => _xrayFilmNo = val),
-                              onHospitalChanged: (val) =>
-                                  setState(() => _xrayHospital = val),
-                              onReportChanged: (val) =>
-                                  setState(() => _xrayReport = val),
+                            Column(
+                              children: [
+                                const Text("Stool Examination",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: OccultBloodDropdown(
+                                        value: _stoolOccultBlood,
+                                        onChanged: (val) => setState(
+                                            () => _stoolOccultBlood = val),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: MicroscopeDropdown(
+                                        value: _stoolMicroscope,
+                                        onChanged: (val) => setState(
+                                            () => _stoolMicroscope = val),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: OvaOrCystDropdown(
+                                        value: _stoolOvaOrCyst,
+                                        onChanged: (val) => setState(
+                                            () => _stoolOvaOrCyst = val),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            FinalFormSection(
-                              otherObservation: _otherObs,
-                              remarks: _remarks,
-                              date: _date,
-                              medicalOfficerName: _officerName,
-                              hospitalAddress: _hospitalAddr,
-                              onOtherObservationChanged: (val) =>
-                                  setState(() => _otherObs = val),
-                              onRemarksChanged: (val) =>
-                                  setState(() => _remarks = val),
-                              onDateChanged: (val) =>
-                                  setState(() => _date = val),
-                              onMedicalOfficerNameChanged: (val) =>
-                                  setState(() => _officerName = val),
-                              onHospitalAddressChanged: (val) =>
-                                  setState(() => _hospitalAddr = val),
+                            Column(
+                              children: [
+                                const Text("Blood Tests",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Form2PatientTextfield(
+                                        controller: _bloodHbController,
+                                        label: "Hemoglobin (Hb) Level",
+                                        isNumeric: true,
+                                        isRequired: true,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: BloodGroupDropdown(
+                                        value: _bloodGroup,
+                                        onChanged: (val) =>
+                                            setState(() => _bloodGroup = val),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: GenotypeDropdown(
+                                        value: _genotype,
+                                        onChanged: (val) =>
+                                            setState(() => _genotype = val),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: VdrlTestDropdown(
+                                        value: _vdrlTest,
+                                        onChanged: (val) =>
+                                            setState(() => _vdrlTest = val),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                const Text("Chest X-Ray",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Form2PatientTextfield(
+                                        controller: _xrayFilmNoController,
+                                        label: "Film Number",
+                                        isRequired: true,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: Form2PatientTextfield(
+                                        controller: _xrayHospitalController,
+                                        label: "Hospital Name",
+                                        isRequired: true,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: Form2PatientTextfield(
+                                          controller: _xrayReportController,
+                                          label: "Report"),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                const Text("Other Observations & Final Info",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 7,
+                                ),
+                                OtherObservationField(
+                                  value: _otherObservation,
+                                  onChanged: (val) =>
+                                      setState(() => _otherObservation = val),
+                                ),
+                                const SizedBox(height: 10),
+                                RemarksField(
+                                  value: _remarks,
+                                  onChanged: (val) =>
+                                      setState(() => _remarks = val),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: DateField(
+                                        selectedDate: _date,
+                                        onDateChanged: (val) =>
+                                            setState(() => _date = val),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Flexible(
+                                      child: MedicalOfficerField(
+                                        value: _medicalOfficerName,
+                                        onChanged: (val) => setState(
+                                            () => _medicalOfficerName = val),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                HospitalAddressField(
+                                  value: _hospitalAddress,
+                                  onChanged: (val) =>
+                                      setState(() => _hospitalAddress = val),
+                                ),
+                              ],
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 30,
                             ),
                             MyButton(
-                                text: 'Save',
+                                text: 'Create',
                                 onPressed: _saveForm2,
                                 isPrimary: true)
                           ],

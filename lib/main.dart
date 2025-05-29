@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
-            debugShowCheckedModeBanner: false,
+            // debugShowCheckedModeBanner: false,
             title: 'DOMICARE',
             theme: themeProvider.themeData, // Use the dynamic theme
             initialRoute: '/',

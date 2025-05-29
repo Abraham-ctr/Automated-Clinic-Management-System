@@ -8,13 +8,15 @@ class PatientService {
     required String patientId,
     required Map<String, dynamic> form1Data,
   }) async {
-    try {
-      await _firestore.collection('patients').doc(patientId).set({
+    final docRef =
+        FirebaseFirestore.instance.collection('patients').doc(patientId);
+
+    await docRef.set(
+      {
         'form1': form1Data,
-      }, SetOptions(merge: true)); // merge = don’t overwrite form2
-    } catch (e) {
-      throw Exception('Failed to save Form 1: $e');
-    }
+      },
+      SetOptions(merge: true), // Merges form1 without overwriting form2
+    );
   }
 
   /// Save Part 2 of the medical form to patients/{patientId}/form2
@@ -22,13 +24,16 @@ class PatientService {
     required String patientId,
     required Map<String, dynamic> form2Data,
   }) async {
-    try {
-      await _firestore.collection('patients').doc(patientId).set({
+    final docRef =
+        FirebaseFirestore.instance.collection('patients').doc(patientId);
+
+    await docRef.set(
+      {
         'form2': form2Data,
-      }, SetOptions(merge: true)); // merge = don’t overwrite form1
-    } catch (e) {
-      throw Exception('Failed to save Form 2: $e');
-    }
+      },
+      SetOptions(
+          merge: true), // Important: this merges instead of overwriting form1
+    );
   }
 
   /// Optional: Get both forms' data (form1 + form2) for a patient
