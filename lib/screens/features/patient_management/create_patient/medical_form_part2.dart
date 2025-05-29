@@ -193,7 +193,7 @@ class _MedicalFormPart2State extends State<MedicalFormPart2> {
       final String patientId = widget.formData['matricNumber'];
 
       await _patientService.saveForm2(
-          patientId: patientId, form2Data: form2Data);
+          patientId: patientId, form2Data: form2DataMap);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
