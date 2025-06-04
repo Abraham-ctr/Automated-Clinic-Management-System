@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
 
             // Use onGenerateRoute instead of routes:
             onGenerateRoute: AppRoutes.generateRoute,
-            initialRoute: AppRoutes.viewDrug,
+            initialRoute: AppRoutes.landing,
           );
         },
       ),
