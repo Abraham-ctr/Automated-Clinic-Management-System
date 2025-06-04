@@ -1,24 +1,30 @@
 String capitalizeAndTrim(String text) {
-
-  // Remove leading/trailing spaces
-  text = text.trim();
-
-  // Capitalize the first letter of each word and make others lowercase
-  return text.split(' ').map((word) {
-    if (word.isEmpty) return '';
-    return word[0].toUpperCase() + word.substring(1).toLowerCase();
-  }).join(' ');
-  
+  return text
+      .trim()
+      .split(RegExp(r'\s+')) // Split by one or more spaces
+      .map((word) => word.isNotEmpty
+          ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+          : '')
+      .join(' ');
 }
 
 String addPrefixToPhoneNumber(String phoneNumber) {
-  phoneNumber = phoneNumber.trim();  // Trim leading/trailing spaces
-  
-  // Check if the phone number starts with a '0'
-  if (phoneNumber.startsWith("0")) {
-    return "+234${phoneNumber.substring(1)}";  // Remove the '0' and add the '+234' prefix
+  // Sanitize: Remove all non-digit characters
+  final cleaned = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
+
+  // Validate basic structure
+  if (cleaned.isEmpty || cleaned.length < 10) {
+    throw const FormatException("Invalid phone number");
   }
 
-  // If the phone number doesn't start with '0', add the '+234' prefix
-  return "+234$phoneNumber";
+  // Handle Nigerian numbers specifically
+  if (cleaned.startsWith('234') && cleaned.length == 13) {
+    return '+$cleaned'; // Already in intl format
+  } else if (cleaned.startsWith('0') && cleaned.length == 11) {
+    return '+234${cleaned.substring(1)}'; // Trim leading '0'
+  } else if (cleaned.length == 10) {
+    return '+234$cleaned'; // Add prefix
+  } else {
+    throw const FormatException("Unrecognized phone number format");
+  }
 }

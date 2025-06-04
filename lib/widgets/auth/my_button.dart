@@ -25,41 +25,68 @@ class MyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: isPrimary
-      ? ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 25),
-            backgroundColor: backgroundColor ?? AppConstants.priColor,
-            foregroundColor: textColor ?? Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        child: isLoading
-        ? const CircularProgressIndicator(
-          color: AppConstants.middleGreyColor,
-        )
-        : Text(text)
-      )
+      child: isPrimary ? _buildPrimaryButton() : _buildSecondaryButton(),
+    );
+  }
 
-      // second button
-      : OutlinedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 25),
-          side: BorderSide(color: borderColor ?? AppConstants.secColor, width: 2),
-          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  Widget _buildPrimaryButton() {
+    return ElevatedButton(
+      onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 25),
+        backgroundColor: backgroundColor ?? AppConstants.priColor,
+        foregroundColor: textColor ?? Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: isLoading
-        ? const CircularProgressIndicator(
-          color: AppConstants.middleGreyColor,
-        )
-        : Text(
-          text,
-          style: TextStyle( color: textColor ?? AppConstants.secColor ),
-        )
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
       ),
+      child: isLoading
+          ? const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 3,
+              ),
+            )
+          : Text(text),
+    );
+  }
+
+  Widget _buildSecondaryButton() {
+    return OutlinedButton(
+      onPressed: isLoading ? null : onPressed,
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 25),
+        side: BorderSide(
+          color: borderColor ?? AppConstants.secColor,
+          width: 2,
+        ),
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: isLoading
+          ? SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                color: textColor ?? AppConstants.secColor,
+                strokeWidth: 3,
+              ),
+            )
+          : Text(
+              text,
+              style: TextStyle(color: textColor ?? AppConstants.secColor),
+            ),
     );
   }
 }

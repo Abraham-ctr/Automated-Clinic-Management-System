@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:automated_clinic_management_system/providers/drawer_provider.dart';
+import 'package:automated_clinic_management_system/core/providers/drawer_provider.dart';
 
 class DrawerService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

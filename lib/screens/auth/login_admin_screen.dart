@@ -1,6 +1,6 @@
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/core/utils/routes.dart';
-import 'package:automated_clinic_management_system/providers/auth_provider.dart';
+import 'package:automated_clinic_management_system/core/providers/auth_provider.dart';
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_text_field.dart';
@@ -86,7 +86,13 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            const FormHeader(text: "LOGIN"),
+                            FormHeader(
+                              text: "LOGIN",
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, AppRoutes.landing);
+                              },
+                            ),
                             const SizedBox(height: 7),
                             MyTextField(
                                 controller: _emailController,
@@ -150,7 +156,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pushNamed(
-                                        context, "/forgotPassword");
+                                        context, AppRoutes.forgotPassword);
                                   },
                                   child: const Text("Forgot Password?",
                                       style: TextStyle(

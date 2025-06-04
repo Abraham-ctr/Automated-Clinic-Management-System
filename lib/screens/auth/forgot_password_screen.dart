@@ -1,4 +1,5 @@
-import 'package:automated_clinic_management_system/providers/auth_provider.dart';
+import 'package:automated_clinic_management_system/core/providers/auth_provider.dart';
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_text_field.dart';
@@ -79,7 +80,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Back Button and Title
-                      const FormHeader(text: "Forgot Password"),
+                      FormHeader(
+                        text: "Forgot Password",
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                              context, AppRoutes.login);
+                        },
+                      ),
 
                       // header text
                       const Text(

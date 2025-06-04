@@ -30,7 +30,7 @@ class DateField extends StatelessWidget {
         child: Text(
           selectedDate != null
               ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
-              : 'Select date',
+              : 'Select date tests done',
           style: const TextStyle(fontSize: 16),
         ),
       ),

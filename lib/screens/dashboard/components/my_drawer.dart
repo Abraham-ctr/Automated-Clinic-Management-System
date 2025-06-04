@@ -1,6 +1,6 @@
 // import 'package:automated_clinic_management_system/services/auth_service.dart';
 import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
-import 'package:automated_clinic_management_system/providers/drawer_provider.dart';
+import 'package:automated_clinic_management_system/core/providers/drawer_provider.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -104,9 +104,9 @@ class MyDrawer extends StatelessWidget {
                       "Patient Management",
                       [
                         _buildDrawerItem(Icons.person_add, "New Patient",
-                            '/registerPatient', context),
+                            AppRoutes.biodata, context),
                         _buildDrawerItem(Icons.list, "View Patients",
-                            '/viewPatients', context),
+                            AppRoutes.viewPatients, context),
                       ],
                       ['/registerPatient', '/viewPatients'],
                       context,
@@ -127,10 +127,10 @@ class MyDrawer extends StatelessWidget {
                       Icons.inventory,
                       "Drug & Inventory",
                       [
-                        _buildDrawerItem(
-                            Icons.add_box, "Add New Drug", '/addDrug', context),
-                        _buildDrawerItem(
-                            Icons.store, "View Stock", '/viewStock', context),
+                        _buildDrawerItem(Icons.add_box, "Add New Drug",
+                            AppRoutes.addDrug, context),
+                        _buildDrawerItem(Icons.store, "View Stock",
+                            AppRoutes.viewDrug, context),
                       ],
                       ['/addDrug', '/viewStock'], // 🔹 Add this
                       context,
@@ -139,8 +139,8 @@ class MyDrawer extends StatelessWidget {
                         "Notifications & Alerts", '/notifications', context),
                     _buildDrawerItem(Icons.bar_chart, "Reports & Analytics",
                         '/reports', context),
-                    _buildDrawerItem(Icons.settings, "Settings",
-                        AppRoutes.settings, context),
+                    _buildDrawerItem(
+                        Icons.settings, "Settings", AppRoutes.setting, context),
                   ],
                 ),
               ),

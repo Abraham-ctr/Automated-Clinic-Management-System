@@ -1,7 +1,7 @@
 import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
-import 'package:automated_clinic_management_system/providers/auth_provider.dart';
-import 'package:automated_clinic_management_system/providers/user_profile_provider.dart';
+import 'package:automated_clinic_management_system/core/providers/auth_provider.dart';
+import 'package:automated_clinic_management_system/core/providers/user_profile_provider.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/date_time_display.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/my_carousel.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/welcome_text.dart';
@@ -151,9 +151,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             const SizedBox(height: 10),
             // Consider using GridView for better control over layout
-            SizedBox(
-              child: Expanded(
-                child: Center(
+            Column(
+              children: [
+                Center(
                   child: Wrap(
                     spacing: MediaQuery.of(context).size.width *
                         0.02, // Adaptive spacing
@@ -208,12 +208,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ],
                   ),
                 ),
-              ),
+                const SizedBox(height: 10),
+                const DateTimeDisplay(),
+                const SizedBox(height: 10),
+              ],
             ),
-
-            const SizedBox(height: 10),
-            const DateTimeDisplay(),
-            const SizedBox(height: 10),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:automated_clinic_management_system/providers/user_profile_provider.dart'; // UserProvider
+import 'package:automated_clinic_management_system/core/providers/user_profile_provider.dart'; // UserProvider
 
 class WelcomeText extends StatelessWidget {
   const WelcomeText({super.key});

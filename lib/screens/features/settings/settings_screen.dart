@@ -1,6 +1,4 @@
-import 'package:automated_clinic_management_system/providers/theme_provider.dart';
-// import 'package:automated_clinic_management_system/services/auth_service.dart';
-import 'package:automated_clinic_management_system/widgets/sub_app_bar.dart';
+import 'package:automated_clinic_management_system/core/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -149,7 +147,6 @@ class SettingsScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Center(
             child: ListView(children: [
-          const SubAppBar(text: "Settings"),
 
           const SizedBox(height: 10),
 

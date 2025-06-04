@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 class FormHeader extends StatelessWidget {
   final String text;
+  final Function()? onPressed;
 
   const FormHeader({
     super.key,
     required this.text,
+    required this.onPressed,
   });
 
   @override
@@ -22,22 +24,26 @@ class FormHeader extends StatelessWidget {
             children: [
               Text(
                 text,
-                style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: AppConstants.priColor),
+                style: const TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                    color: AppConstants.priColor),
               ),
-        
               Positioned(
                 left: 0,
                 child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back_ios, color: AppConstants.priColor ),
+                  onPressed:  onPressed,
+                  icon: const Icon(Icons.arrow_back_ios,
+                      color: AppConstants.priColor),
                   tooltip: "Go Back",
                 ),
               ),
             ],
           ),
         ),
-
-        const SizedBox(height: 20,)
+        const SizedBox(
+          height: 20,
+        )
       ],
     );
   }

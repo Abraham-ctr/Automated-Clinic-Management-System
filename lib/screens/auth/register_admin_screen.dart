@@ -1,6 +1,7 @@
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:automated_clinic_management_system/core/utils/snackbar_helper.dart';
 import 'package:automated_clinic_management_system/core/utils/utilities.dart';
-import 'package:automated_clinic_management_system/providers/auth_provider.dart'
+import 'package:automated_clinic_management_system/core/providers/auth_provider.dart'
     as my_auth;
 import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
@@ -155,7 +156,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
                                 border: Border.all(color: Colors.grey)),
                             child: Column(
                               children: [
-                                const FormHeader(text: "REGISTER"),
+                                FormHeader(text: "REGISTER", onPressed: () { Navigator.pushReplacementNamed(context, AppRoutes.landing); },),
                                 const SizedBox(height: 7),
                                 Row(
                                   children: [
