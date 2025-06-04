@@ -149,6 +149,7 @@ class _DrugListScreenState extends State<DrugListScreen> {
       children: [
         IconButton(
           icon: const Icon(Icons.remove),
+          color: Colors.redAccent,
           onPressed: quantity > 0
               ? () {
                   setState(() {
@@ -157,9 +158,19 @@ class _DrugListScreenState extends State<DrugListScreen> {
                 }
               : null,
         ),
-        Text(quantity.toString()),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          quantity.toString(),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
         IconButton(
           icon: const Icon(Icons.add),
+          color: Colors.green,
           onPressed: () {
             setState(() {
               _quantityValues[drugId] = quantity + 1;
@@ -211,162 +222,221 @@ class _DrugListScreenState extends State<DrugListScreen> {
                   return const Center(child: Text('No drugs available'));
                 }
 
-                return ListView.builder(
-                  itemCount: drugs.length,
-                  itemBuilder: (context, index) {
-                    final drug = drugs[index];
-                    final isEditing = drug.id == _editingDrugId;
-                    final lowStock = drug.quantity <= drug.threshold;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: ListView.builder(
+                    itemCount: drugs.length,
+                    itemBuilder: (context, index) {
+                      final drug = drugs[index];
+                      final isEditing = drug.id == _editingDrugId;
+                      final lowStock = drug.quantity <= drug.threshold;
 
-                    if (isEditing) {
+                      if (isEditing) {
+                        return Card(
+                          margin: const EdgeInsets.all(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Name input
+                                TextFormField(
+                                  controller: _nameControllers[drug.id!],
+                                  decoration: InputDecoration(
+                                    labelText: 'Drug Name',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                          color: AppConstants.middleGreyColor),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                          color: AppConstants.priColor,
+                                          width: 2),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                // Quantity counter
+                                Row(
+                                  children: [
+                                    const Text('Quantity: '),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(),
+                                            borderRadius:
+                                                BorderRadius.circular(7)),
+                                        child: _buildQuantityCounter(drug.id!)),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                // Category dropdown
+                                DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                    labelText: 'Category',
+                                    labelStyle:
+                                        const TextStyle(color: Colors.black87),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                          color: AppConstants.middleGreyColor),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                          color: AppConstants.priColor,
+                                          width: 2),
+                                    ),
+                                  ),
+                                  value: _categories
+                                          .contains(_categoryValues[drug.id!])
+                                      ? _categoryValues[drug.id!]
+                                      : null,
+                                  hint: const Text('Select category'),
+                                  items: _categories
+                                      .map((c) => DropdownMenuItem(
+                                            value: c,
+                                            child: Text(c),
+                                          ))
+                                      .toList(),
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      setState(() {
+                                        _categoryValues[drug.id!] = val;
+                                      });
+                                    }
+                                  },
+                                ),
+
+                                const SizedBox(height: 20),
+                                // Expiry date picker
+                                Row(
+                                  children: [
+                                    const Text('Expiry Date: '),
+                                    Text(
+                                      _expiryDates[drug.id!] != null
+                                          ? "${_expiryDates[drug.id!]!.toLocal()}"
+                                              .split(' ')[0]
+                                          : 'None',
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          _pickExpiryDate(drug.id!),
+                                      child: const Text(
+                                        'Pick Date',
+                                        style: TextStyle(
+                                            color: AppConstants.secColor),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+
+                                // supplier
+                                TextFormField(
+                                  controller: _supplier[drug.id!],
+                                  decoration: InputDecoration(
+                                    labelText: 'Supplier',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                          color: AppConstants.middleGreyColor),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                          color: AppConstants.priColor,
+                                          width: 2),
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 18),
+                                // Save & Cancel buttons
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () => _cancelEditing(drug.id!),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: _isSaving[drug.id!] == true
+                                          ? null
+                                          : () => _saveEditing(drug.id!),
+                                      child: _isSaving[drug.id!] == true
+                                          ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(Colors.white),
+                                              ),
+                                            )
+                                          : const Text('Save'),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+
+                      // Not editing mode, just viewing — display drug info with edit/delete icons
                       return Card(
                         margin: const EdgeInsets.all(8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
+                        child: ListTile(
+                          title: Text(
+                            drug.name,
+                            style: TextStyle(
+                              color:
+                                  lowStock ? Colors.red : AppConstants.secColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Name input
-                              TextFormField(
-                                controller: _nameControllers[drug.id!],
-                                decoration: const InputDecoration(
-                                    labelText: 'Drug Name'),
+                              Text(
+                                  'Qty: ${drug.quantity} | Category: ${drug.category} | Expiry Date: ${drug.expiryDate != null ? drug.expiryDate!.toLocal().toString().split(' ')[0] : 'None'} | Supplier: ${drug.supplier}'),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Edit',
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: AppConstants.secColor,
+                                ),
+                                onPressed: () => _startEditing(drug),
                               ),
-                              const SizedBox(height: 8),
-                              // Quantity counter
-                              Row(
-                                children: [
-                                  const Text('Quantity: '),
-                                  _buildQuantityCounter(drug.id!),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              // Category dropdown
-                              DropdownButton<String>(
-                                value: _categories
-                                        .contains(_categoryValues[drug.id!])
-                                    ? _categoryValues[drug.id!]
-                                    : null,
-                                hint: const Text('Select category'),
-                                items: _categories
-                                    .map((c) => DropdownMenuItem(
-                                          value: c,
-                                          child: Text(c),
-                                        ))
-                                    .toList(),
-                                onChanged: (val) {
-                                  if (val != null) {
-                                    setState(() {
-                                      _categoryValues[drug.id!] = val;
-                                    });
-                                  }
+                              IconButton(
+                                tooltip: 'Delete',
+                                icon: const Icon(
+                                  Icons.delete_forever,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  if (drug.id != null) _deleteDrug(drug.id!);
                                 },
                               ),
-
-                              const SizedBox(height: 8),
-                              // Expiry date picker
-                              Row(
-                                children: [
-                                  const Text('Expiry Date: '),
-                                  Text(
-                                    _expiryDates[drug.id!] != null
-                                        ? "${_expiryDates[drug.id!]!.toLocal()}"
-                                            .split(' ')[0]
-                                        : 'None',
-                                  ),
-                                  TextButton(
-                                    onPressed: () => _pickExpiryDate(drug.id!),
-                                    child: const Text('Pick Date'),
-                                  )
-                                ],
-                              ),
-
-                              // supplier
-                              TextFormField(
-                                controller: _supplier[drug.id!],
-                                decoration: const InputDecoration(
-                                    labelText: 'Supplier'),
-                              ),
-
-                              const SizedBox(height: 12),
-                              // Save & Cancel buttons
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () => _cancelEditing(drug.id!),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: _isSaving[drug.id!] == true
-                                        ? null
-                                        : () => _saveEditing(drug.id!),
-                                    child: _isSaving[drug.id!] == true
-                                        ? const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      Colors.white),
-                                            ),
-                                          )
-                                        : const Text('Save'),
-                                  ),
-                                ],
-                              )
                             ],
                           ),
                         ),
                       );
-                    }
-
-                    // Not editing mode, just viewing — display drug info with edit/delete icons
-                    return Card(
-                      margin: const EdgeInsets.all(8),
-                      child: ListTile(
-                        title: Text(
-                          drug.name,
-                          style: TextStyle(
-                            color:
-                                lowStock ? Colors.red : AppConstants.secColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                'Qty: ${drug.quantity} | Category: ${drug.category} | Expiry Date: ${drug.expiryDate != null ? drug.expiryDate!.toLocal().toString().split(' ')[0] : 'None'} | Supplier: ${drug.supplier}'),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              tooltip: 'Edit',
-                              icon: const Icon(
-                                Icons.edit,
-                                color: AppConstants.secColor,
-                              ),
-                              onPressed: () => _startEditing(drug),
-                            ),
-                            IconButton(
-                              tooltip: 'Delete',
-                              icon: const Icon(
-                                Icons.delete_forever,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                if (drug.id != null) _deleteDrug(drug.id!);
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                    },
+                  ),
                 );
               },
             ),

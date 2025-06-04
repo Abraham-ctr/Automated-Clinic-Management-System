@@ -4,7 +4,8 @@ import 'package:automated_clinic_management_system/screens/features/inventory_ma
 import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/biodata_form_screen.dart';
 import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/medical_test_form_screen.dart';
 import 'package:automated_clinic_management_system/screens/features/patient_management/view_patient/view_patient.dart';
-import 'package:automated_clinic_management_system/screens/features/settings/components/notifications_screen.dart';
+import 'package:automated_clinic_management_system/screens/features/notifications/drug_alerts_page.dart';
+import 'package:automated_clinic_management_system/screens/features/reports/reports_analytics_page.dart';
 import 'package:automated_clinic_management_system/screens/features/settings/settings_screen.dart';
 import 'package:automated_clinic_management_system/screens/landing_screen.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/dashboard_screen.dart';
@@ -14,25 +15,36 @@ import 'package:automated_clinic_management_system/screens/auth/register_admin_s
 import 'package:flutter/material.dart';
 
 class AppRoutes {
+  // landing
   static const String landing = '/';
+
   // auth
   static const String register = '/register';
   static const String login = '/login';
   static const String forgotPassword = '/forgotPassword';
+
   // dashboard
   static const String dashboard = '/dashboard';
 
-  // patient
+  // patients
   static const String biodata = '/biodata';
   static const String medicalTest = '/medicalTest';
   static const String viewPatients = '/viewPatients';
 
-  // drug
+  // consultations
+
+  // drugs
   static const String addDrug = '/addDrug';
   static const String viewDrug = '/viewDrug';
 
-  static const String setting = '/settings';
+  // notifications & alerts
   static const String notifications = '/notifications';
+
+  // reports & analytics
+  static const String reports = '/reports';
+
+  // settings
+  static const String setting = '/settings';
 
   // Route generator with proper argument handling
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -60,10 +72,12 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const AddDrugScreen());
       case viewDrug:
         return MaterialPageRoute(builder: (_) => const DrugListScreen());
+      case reports:
+        return MaterialPageRoute(builder: (_) => const DrugReportsPage());
       case setting:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case notifications:
-        return MaterialPageRoute(builder: (_) => const NotificationsScreen());
+        return MaterialPageRoute(builder: (_) => const DrugAlertsPage());
 
       default:
         return MaterialPageRoute(

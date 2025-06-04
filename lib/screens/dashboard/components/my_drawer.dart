@@ -108,7 +108,7 @@ class MyDrawer extends StatelessWidget {
                         _buildDrawerItem(Icons.list, "View Patients",
                             AppRoutes.viewPatients, context),
                       ],
-                      ['/registerPatient', '/viewPatients'],
+                      [AppRoutes.biodata, AppRoutes.viewPatients],
                       context,
                     ),
                     _buildExpansionTile(
@@ -132,13 +132,16 @@ class MyDrawer extends StatelessWidget {
                         _buildDrawerItem(Icons.store, "View Stock",
                             AppRoutes.viewDrug, context),
                       ],
-                      ['/addDrug', '/viewStock'], // 🔹 Add this
+                      [AppRoutes.addDrug, AppRoutes.viewDrug],
                       context,
                     ),
-                    _buildDrawerItem(Icons.notifications,
-                        "Notifications & Alerts", '/notifications', context),
+                    _buildDrawerItem(
+                        Icons.notifications,
+                        "Notifications & Alerts",
+                        AppRoutes.notifications,
+                        context),
                     _buildDrawerItem(Icons.bar_chart, "Reports & Analytics",
-                        '/reports', context),
+                        AppRoutes.reports, context),
                     _buildDrawerItem(
                         Icons.settings, "Settings", AppRoutes.setting, context),
                   ],
@@ -161,7 +164,7 @@ class MyDrawer extends StatelessWidget {
                       .setUserData('', '', '', '');
                   // Navigate to login screen
                   Navigator.pushNamedAndRemoveUntil(
-                      context, '/login', (route) => false);
+                      context, AppRoutes.login, (route) => false);
                 },
               ),
             ],

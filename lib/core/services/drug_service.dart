@@ -91,4 +91,22 @@ class DrugService {
       rethrow;
     }
   }
+
+  Future<List<Drug>> getExpiringSoonDrugs({int days = 30}) async {
+    try {
+      final now = DateTime.now();
+      final soon = now.add(Duration(days: days));
+
+      final snapshot = await drugsCollection
+          .where('expiryDate', isGreaterThanOrEqualTo: Timestamp.fromDate(now))
+          .where('expiryDate', isLessThanOrEqualTo: Timestamp.fromDate(soon))
+          .orderBy('expiryDate')
+          .get();
+
+      return snapshot.docs.map((doc) => Drug.fromFirestore(doc)).toList();
+    } catch (e) {
+      print('Error fetching expiring drugs: $e');
+      rethrow;
+    }
+  }
 }

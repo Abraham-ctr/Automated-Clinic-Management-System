@@ -1,6 +1,7 @@
 import 'package:automated_clinic_management_system/core/providers/auth_provider.dart'
     as my_auth;
 import 'package:automated_clinic_management_system/core/providers/drawer_provider.dart';
+import 'package:automated_clinic_management_system/core/providers/drug_provider.dart';
 import 'package:automated_clinic_management_system/core/providers/theme_provider.dart';
 import 'package:automated_clinic_management_system/core/services/drawer_service.dart';
 import 'package:automated_clinic_management_system/core/utils/routes.dart';
@@ -29,11 +30,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => my_auth.AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+        ChangeNotifierProvider(create: (_) => DrugProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
-            // debugShowCheckedModeBanner: false,
+            debugShowCheckedModeBanner: false,
             title: 'DOMICARE',
             theme: themeProvider.themeData, // Use the dynamic theme
 

@@ -115,7 +115,9 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FormHeader(
-                        text: "Add New Drug", onPressed: () => Navigator.pop),
+                        text: "Add New Drug",
+                        onPressed: () =>
+                            Navigator.pushNamed(context, AppRoutes.dashboard)),
                     SizedBox(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
