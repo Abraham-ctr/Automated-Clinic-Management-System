@@ -9,8 +9,6 @@ class ViewPatientsScreen extends StatefulWidget {
 }
 
 class _ViewPatientsScreenState extends State<ViewPatientsScreen> {
-  final PatientService _patientService = PatientService();
-
   late Future<List<Map<String, dynamic>>> _patientsFuture;
 
   List<Map<String, dynamic>> _allPatients = [];
@@ -148,8 +146,9 @@ class _ViewPatientsScreenState extends State<ViewPatientsScreen> {
 
               final indexFiltered =
                   _filteredPatients.indexWhere((p) => p['id'] == patient['id']);
-              if (indexFiltered != -1)
+              if (indexFiltered != -1) {
                 _filteredPatients[indexFiltered] = updatedPatient;
+              }
             });
           },
           onDelete: () {
