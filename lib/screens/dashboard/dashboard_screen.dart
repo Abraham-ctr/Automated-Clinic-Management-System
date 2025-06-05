@@ -2,6 +2,7 @@ import 'package:automated_clinic_management_system/core/services/drawer_service.
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
 import 'package:automated_clinic_management_system/core/providers/auth_provider.dart';
 import 'package:automated_clinic_management_system/core/providers/user_profile_provider.dart';
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/date_time_display.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/my_carousel.dart';
 import 'package:automated_clinic_management_system/screens/dashboard/components/welcome_text.dart';
@@ -96,7 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       await auth.signOut();
                       Navigator.pushNamedAndRemoveUntil(
                         context,
-                        '/login',
+                        AppRoutes.login,
                         (route) => false, // Remove all previous routes
                       );
                     } catch (_) {

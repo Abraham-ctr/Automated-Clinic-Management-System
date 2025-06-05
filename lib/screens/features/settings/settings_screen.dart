@@ -1,4 +1,5 @@
 import 'package:automated_clinic_management_system/core/providers/theme_provider.dart';
+import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -147,7 +148,7 @@ class SettingsScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Center(
             child: ListView(children: [
-
+          FormHeader(text: "Settings", onPressed: ()=> Navigator.pop),
           const SizedBox(height: 10),
 
           // Profile Settings
