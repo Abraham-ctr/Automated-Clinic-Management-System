@@ -16,7 +16,7 @@ class FormHeader extends StatelessWidget {
     return Column(
       children: [
         Container(
-          // color: Colors.green,
+          color: AppConstants.secColor,
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Stack(
@@ -27,22 +27,22 @@ class FormHeader extends StatelessWidget {
                 style: const TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
-                    color: AppConstants.priColor),
+                    color: AppConstants.whiteColor),
               ),
               Positioned(
                 left: 0,
                 child: IconButton(
-                  onPressed:  onPressed,
+                  onPressed: onPressed,
                   icon: const Icon(Icons.arrow_back_ios,
-                      color: AppConstants.priColor),
+                      color: AppConstants.whiteColor),
                   tooltip: "Go Back",
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(
-          height: 20,
+        const Divider(
+          color: AppConstants.priColor,
         )
       ],
     );

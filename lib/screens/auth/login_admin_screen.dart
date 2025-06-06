@@ -87,7 +87,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             FormHeader(
-                              text: "LOGIN",
+                              text: "Login",
                               onPressed: () {
                                 Navigator.pushReplacementNamed(
                                     context, AppRoutes.landing);
@@ -160,7 +160,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                                   },
                                   child: const Text("Forgot Password?",
                                       style: TextStyle(
-                                          color: AppConstants.secColor)),
+                                          color: AppConstants.priColor)),
                                 ),
                               ],
                             ),
@@ -168,7 +168,7 @@ class LoginAdminScreenState extends State<LoginAdminScreen> {
                             // Login Button
                             MyButton(
                               text: isLoading ? "Logging you in.." : "Login",
-                              isPrimary: true,
+                              isPrimary: false,
                               onPressed: isLoading ? null : _onLoginPressed,
                             ),
 

@@ -90,12 +90,10 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         showSnackBar(context, _firebaseErrorMessage(e.code));
-        print('Registration error: $e');
       }
     } catch (e) {
       if (mounted) {
         showSnackBar(context, 'An unexpected error occurred');
-        print('Registration error: $e');
       }
     } finally {
       if (mounted) setState(() => isLoading = false);
@@ -156,7 +154,13 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
                                 border: Border.all(color: Colors.grey)),
                             child: Column(
                               children: [
-                                FormHeader(text: "REGISTER", onPressed: () { Navigator.pushReplacementNamed(context, AppRoutes.landing); },),
+                                FormHeader(
+                                  text: "REGISTER",
+                                  onPressed: () {
+                                    Navigator.pushReplacementNamed(
+                                        context, AppRoutes.landing);
+                                  },
+                                ),
                                 const SizedBox(height: 7),
                                 Row(
                                   children: [
@@ -333,7 +337,7 @@ class RegisterAdminScreenState extends State<RegisterAdminScreen> {
                                   isLoading: isLoading,
                                   onPressed:
                                       isLoading ? null : _onRegisterPressed,
-                                  isPrimary: true,
+                                  isPrimary: false,
                                 ),
                                 const SizedBox(height: 20),
                               ],

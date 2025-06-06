@@ -33,24 +33,45 @@ class MyTextFieldState extends State<MyTextField> {
       child: TextFormField(
         controller: widget.controller,
         keyboardType: widget.keyboardType,
-        textCapitalization: widget.keyboardType == TextInputType.name ? TextCapitalization.words : TextCapitalization.none,
-        autocorrect: widget.keyboardType != TextInputType.emailAddress, 
+        textCapitalization: widget.keyboardType == TextInputType.name
+            ? TextCapitalization.words
+            : TextCapitalization.none,
+        autocorrect: widget.keyboardType != TextInputType.emailAddress,
         obscureText: widget.isPassword ? _obscureText : false,
         decoration: InputDecoration(
           labelText: widget.label,
           labelStyle: const TextStyle(color: AppConstants.darkGreyColor),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8),),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: AppConstants.middleGreyColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: AppConstants.middleGreyColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: AppConstants.priColor,
+              width: 2,
+            ),
+          ),
+          filled: true,
+          fillColor: AppConstants.whiteColor,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           suffixIcon: widget.isPassword
               ? IconButton(
-                  icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+                  icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility),
                   onPressed: () => setState(() => _obscureText = !_obscureText),
                 )
               : null,
         ),
         validator: widget.validator ??
             (value) {
-              if (widget.isRequired && (value == null || value.trim().isEmpty)) {
+              if (widget.isRequired &&
+                  (value == null || value.trim().isEmpty)) {
                 return "${widget.label} is required";
               }
               return null;
