@@ -1,5 +1,6 @@
 import 'package:automated_clinic_management_system/core/services/patient_service.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:automated_clinic_management_system/models/patient.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -15,8 +16,12 @@ class MedicalTestFormScreen extends StatefulWidget {
 }
 
 class _MedicalTestFormScreenState extends State<MedicalTestFormScreen> {
+  final PatientService _patientService = PatientService();
   final _formKey = GlobalKey<FormState>();
-  final _service = PatientService();
+  bool _isSaving = false;
+
+  late String _matricNumber;
+
   DateTime? _testDate;
   final TextEditingController _testDateController = TextEditingController();
 
@@ -92,6 +97,99 @@ class _MedicalTestFormScreenState extends State<MedicalTestFormScreen> {
     'hospitalAddress': TextEditingController(),
   };
 
+  Future<void> _saveMedicalTest() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      final medicalTest = PatientMedicalTest(
+        heightMeters: int.tryParse(_controllers['heightM']!.text) ?? 0,
+        heightCm: int.tryParse(_controllers['heightCm']!.text) ?? 0,
+        weightKg: int.tryParse(_controllers['weightKg']!.text) ?? 0,
+        weightG: int.tryParse(_controllers['weightG']!.text) ?? 0,
+        visualAcuityWithoutGlassesRight:
+            _controllers['visualAcuityWithoutRight']!.text,
+        visualAcuityWithoutGlassesLeft:
+            _controllers['visualAcuityWithoutLeft']!.text,
+        visualAcuityWithGlassesRight:
+            _controllers['visualAcuityWithRight']!.text,
+        visualAcuityWithGlassesLeft: _controllers['visualAcuityWithLeft']!.text,
+        hearingLeft: _controllers['hearingLeft']!.text,
+        hearingRight: _controllers['hearingRight']!.text,
+        heart: _controllers['heart']!.text,
+        bloodPressure: _controllers['bloodPressure']!.text,
+        eyes: _controllers['eyes']!.text,
+        respiratorySystem: _controllers['respiratorySystem']!.text,
+        pharynx: _controllers['pharynx']!.text,
+        lungs: _controllers['lungs']!.text,
+        teeth: _controllers['teeth']!.text,
+        liver: _controllers['liver']!.text,
+        lymphaticGlands: _controllers['lymphaticGlands']!.text,
+        spleen: _controllers['spleen']!.text,
+        skin: _controllers['skin']!.text,
+        hernia: _controllers['hernia']!.text,
+        papillaryReflex: _controllers['papillaryReflex']!.text,
+        spinalReflex: _controllers['spinalReflex']!.text,
+        urineAlbumin: _controllers['urineAlbumin']!.text,
+        urineSugar: _controllers['urineSugar']!.text,
+        urineProtein: _controllers['urineProtein']!.text,
+        stoolOccultBlood: _controllers['stoolOccultBlood']!.text,
+        stoolMicroscope: _controllers['stoolMicroscope']!.text,
+        stoolOvaOrCyst: _controllers['stoolOvaOrCyst']!.text,
+        bloodHb: _controllers['bloodHb']!.text,
+        bloodGroup: _controllers['bloodGroup']!.text,
+        genotype: _controllers['genotype']!.text,
+        vdrlTest: _controllers['vdrlTest']!.text,
+        chestXRayFilmNo: _controllers['chestXRayFilmNo']!.text,
+        chestXRayHospital: _controllers['chestXRayHospital']!.text,
+        chestXRayReport: _controllers['chestXRayReport']!.text,
+        otherObservation: _controllers['otherObservation']!.text,
+        remarks: _controllers['remarks']!.text,
+        testDate: _testDate!,
+        medicalOfficerName: _controllers['medicalOfficerName']!.text,
+        hospitalAddress: _controllers['hospitalAddress']!.text,
+      );
+
+      await _patientService.saveMedicalTest(_matricNumber, medicalTest);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Medical test saved successfully!')),
+      );
+
+      // Clear form
+      _formKey.currentState!.reset();
+      _testDateController.clear();
+      _testDate = null;
+      for (var controller in _controllers.values) {
+        controller.clear();
+      }
+
+      // Navigate to view patients screen
+      Navigator.pushReplacementNamed(context, AppRoutes.viewPatients);
+
+      _formKey.currentState!.reset();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving medical test: $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _matricNumber = widget.biodata.matricNumber;
+  }
+
   @override
   void dispose() {
     _testDateController.dispose();
@@ -130,81 +228,6 @@ class _MedicalTestFormScreenState extends State<MedicalTestFormScreen> {
     if (picked != null && picked != _testDate) {
       setState(() => _testDate = picked);
       _testDateController.text = DateFormat('dd/MM/yyyy').format(picked);
-    }
-  }
-
-  Future<void> _saveMedicalTest() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_testDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select test date')),
-      );
-      return;
-    }
-
-    final medicalTest = PatientMedicalTest(
-      heightMeters: int.tryParse(_controllers['heightM']!.text) ?? 0,
-      heightCm: int.tryParse(_controllers['heightCm']!.text) ?? 0,
-      weightKg: int.tryParse(_controllers['weightKg']!.text) ?? 0,
-      weightG: int.tryParse(_controllers['weightG']!.text) ?? 0,
-      visualAcuityWithoutGlassesRight:
-          _controllers['visualAcuityWithoutRight']!.text,
-      visualAcuityWithoutGlassesLeft:
-          _controllers['visualAcuityWithoutLeft']!.text,
-      visualAcuityWithGlassesRight: _controllers['visualAcuityWithRight']!.text,
-      visualAcuityWithGlassesLeft: _controllers['visualAcuityWithLeft']!.text,
-      hearingLeft: _controllers['hearingLeft']!.text,
-      hearingRight: _controllers['hearingRight']!.text,
-      heart: _controllers['heart']!.text,
-      bloodPressure: _controllers['bloodPressure']!.text,
-      eyes: _controllers['eyes']!.text,
-      respiratorySystem: _controllers['respiratorySystem']!.text,
-      pharynx: _controllers['pharynx']!.text,
-      lungs: _controllers['lungs']!.text,
-      teeth: _controllers['teeth']!.text,
-      liver: _controllers['liver']!.text,
-      lymphaticGlands: _controllers['lymphaticGlands']!.text,
-      spleen: _controllers['spleen']!.text,
-      skin: _controllers['skin']!.text,
-      hernia: _controllers['hernia']!.text,
-      papillaryReflex: _controllers['papillaryReflex']!.text,
-      spinalReflex: _controllers['spinalReflex']!.text,
-      urineAlbumin: _controllers['urineAlbumin']!.text,
-      urineSugar: _controllers['urineSugar']!.text,
-      urineProtein: _controllers['urineProtein']!.text,
-      stoolOccultBlood: _controllers['stoolOccultBlood']!.text,
-      stoolMicroscope: _controllers['stoolMicroscope']!.text,
-      stoolOvaOrCyst: _controllers['stoolOvaOrCyst']!.text,
-      bloodHb: _controllers['bloodHb']!.text,
-      bloodGroup: _controllers['bloodGroup']!.text,
-      genotype: _controllers['genotype']!.text,
-      vdrlTest: _controllers['vdrlTest']!.text,
-      chestXRayFilmNo: _controllers['chestXRayFilmNo']!.text,
-      chestXRayHospital: _controllers['chestXRayHospital']!.text,
-      chestXRayReport: _controllers['chestXRayReport']!.text,
-      otherObservation: _controllers['otherObservation']!.text,
-      remarks: _controllers['remarks']!.text,
-      testDate: _testDate!,
-      medicalOfficerName: _controllers['medicalOfficerName']!.text,
-      hospitalAddress: _controllers['hospitalAddress']!.text,
-    );
-
-    try {
-      await _service.saveMedicalTest(
-        matricNumber: widget.biodata.matricNumber,
-        medicalTest: medicalTest,
-      );
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Medical test saved successfully!')),
-      );
-      Navigator.pop(context);
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
     }
   }
 
@@ -657,6 +680,7 @@ class _MedicalTestFormScreenState extends State<MedicalTestFormScreen> {
                       text: 'Save Medical Data',
                       onPressed: _saveMedicalTest,
                       isPrimary: true,
+                      isLoading: _isSaving,
                     ),
                   ),
                 ),

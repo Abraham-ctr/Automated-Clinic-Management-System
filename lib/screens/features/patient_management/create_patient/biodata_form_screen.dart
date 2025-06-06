@@ -15,7 +15,7 @@ class BiodataFormScreen extends StatefulWidget {
 
 class _BiodataFormScreenState extends State<BiodataFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _service = PatientService();
+  final PatientService _patientService = PatientService();
   bool _isSaving = false;
 
   // Form controllers
@@ -138,68 +138,62 @@ class _BiodataFormScreenState extends State<BiodataFormScreen> {
     }
   }
 
+  // Submit function
   Future<void> _submitForm() async {
-    // Prevent multiple submissions
-    if (_isSaving) return;
-
-    // Validate form
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    if (_dob == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select date of birth')),
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    // Create biodata object
-    final biodata = PatientBiodata(
-      matricNumber: _matricController.text.trim().toUpperCase(),
-      surname: capitalizeAndTrim(_surnameController.text),
-      firstName: capitalizeAndTrim(_firstNameController.text),
-      otherNames: capitalizeAndTrim(_otherNamesController.text),
-      dateOfBirth: _dob!,
-      sex: _sex,
-      maritalStatus: _maritalStatus,
-      nationality: _nationality,
-      placeOfBirth: capitalizeAndTrim(_birthPlaceController.text),
-      phoneNumber: addPrefixToPhoneNumber(_phoneController.text.trim()),
-      department: capitalizeAndTrim(_selectedDepartment ?? ''),
-      programme: capitalizeAndTrim(_selectedProgramme ?? ''),
-      nameOfParentOrGuardian: capitalizeAndTrim(_parentNameController.text),
-      phoneNumberOfParentOrGuardian:
-          addPrefixToPhoneNumber(_parentPhoneController.text.trim()),
-      nameOfNextOfKin: capitalizeAndTrim(_kinNameController.text),
-      phoneNumberOfNextOfKin:
-          addPrefixToPhoneNumber(_kinPhoneController.text.trim()),
-    );
-
-    setState(() => _isSaving = true);
+    setState(() {
+      _isSaving = true;
+    });
 
     try {
-      // Close keyboard
-      FocusScope.of(context).unfocus();
+      final biodata = PatientBiodata(
+        matricNumber: _matricController.text.trim().toUpperCase(),
+        surname: capitalizeAndTrim(_surnameController.text),
+        firstName: capitalizeAndTrim(_firstNameController.text),
+        otherNames: capitalizeAndTrim(_otherNamesController.text),
+        dateOfBirth: _dob!,
+        sex: _sex,
+        maritalStatus: _maritalStatus,
+        nationality: _nationality,
+        placeOfBirth: capitalizeAndTrim(_birthPlaceController.text),
+        phoneNumber: addPrefixToPhoneNumber(_phoneController.text.trim()),
+        department: capitalizeAndTrim(_selectedDepartment ?? ''),
+        programme: capitalizeAndTrim(_selectedProgramme ?? ''),
+        nameOfParentOrGuardian: capitalizeAndTrim(_parentNameController.text),
+        phoneNumberOfParentOrGuardian:
+            addPrefixToPhoneNumber(_parentPhoneController.text.trim()),
+        nameOfNextOfKin: capitalizeAndTrim(_kinNameController.text),
+        phoneNumberOfNextOfKin:
+            addPrefixToPhoneNumber(_kinPhoneController.text.trim()),
+      );
 
-      await _service.saveBiodata(biodata);
-      print(biodata);
+      await _patientService.saveBiodata(biodata);
 
-      if (mounted) {
-        Navigator.pushNamed(
-          context,
-          AppRoutes.medicalTest,
-          arguments: biodata,
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Patient saved successfully!')),
+      );
+      // Navigate to the MedicalTestScreen
+      Navigator.pushNamed(
+        context,
+        AppRoutes.medicalTest,
+        arguments: biodata,
+      );
+
+      // Optionally, clear form or navigate away
+      _formKey.currentState!.reset();
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving patient: $e')),
+      );
     } finally {
-      if (mounted) setState(() => _isSaving = false);
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
     }
   }
 

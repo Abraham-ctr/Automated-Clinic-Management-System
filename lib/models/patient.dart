@@ -215,6 +215,53 @@ class PatientMedicalTest {
       'hospitalAddress': hospitalAddress,
     };
   }
+
+  factory PatientMedicalTest.fromMap(Map<String, dynamic> map) {
+    return PatientMedicalTest(
+      heightMeters: map['heightMeters'],
+      heightCm: map['heightCm'],
+      weightKg: map['weightKg'],
+      weightG: map['weightG'],
+      visualAcuityWithoutGlassesRight: map['visualAcuityWithoutGlassesRight'],
+      visualAcuityWithoutGlassesLeft: map['visualAcuityWithoutGlassesLeft'],
+      visualAcuityWithGlassesRight: map['visualAcuityWithGlassesRight'],
+      visualAcuityWithGlassesLeft: map['visualAcuityWithGlassesLeft'],
+      hearingLeft: map['hearingLeft'],
+      hearingRight: map['hearingRight'],
+      heart: map['heart'],
+      bloodPressure: map['bloodPressure'],
+      eyes: map['eyes'],
+      respiratorySystem: map['respiratorySystem'],
+      pharynx: map['pharynx'],
+      lungs: map['lungs'],
+      teeth: map['teeth'],
+      liver: map['liver'],
+      lymphaticGlands: map['lymphaticGlands'],
+      spleen: map['spleen'],
+      skin: map['skin'],
+      hernia: map['hernia'],
+      papillaryReflex: map['papillaryReflex'],
+      spinalReflex: map['spinalReflex'],
+      urineAlbumin: map['urineAlbumin'],
+      urineSugar: map['urineSugar'],
+      urineProtein: map['urineProtein'],
+      stoolOccultBlood: map['stoolOccultBlood'],
+      stoolMicroscope: map['stoolMicroscope'],
+      stoolOvaOrCyst: map['stoolOvaOrCyst'],
+      bloodHb: map['bloodHb'],
+      bloodGroup: map['bloodGroup'],
+      genotype: map['genotype'],
+      vdrlTest: map['vdrlTest'],
+      chestXRayFilmNo: map['chestXRayFilmNo'],
+      chestXRayHospital: map['chestXRayHospital'],
+      chestXRayReport: map['chestXRayReport'],
+      otherObservation: map['otherObservation'],
+      remarks: map['remarks'],
+      testDate: (map['testDate'] as Timestamp).toDate(),
+      medicalOfficerName: map['medicalOfficerName'],
+      hospitalAddress: map['hospitalAddress'],
+    );
+  }
 }
 
 class Patient {
@@ -233,59 +280,18 @@ class Patient {
 
   Map<String, dynamic> toMap() {
     return {
-      ...biodata.toMap(),
-      ...medicalTest.toMap(),
+      'biodata': biodata.toMap(),
+      'medicalTest': medicalTest.toMap(),
       'dateTimeCreated': Timestamp.fromDate(dateTimeCreated),
     };
   }
 
   factory Patient.fromMap(Map<String, dynamic> map) {
     return Patient(
-      biodata: PatientBiodata.fromMap(map),
-      medicalTest: PatientMedicalTest(
-        heightMeters: map['heightMeters'],
-        heightCm: map['heightCm'],
-        weightKg: map['weightKg'],
-        weightG: map['weightG'],
-        visualAcuityWithoutGlassesRight: map['visualAcuityWithoutGlassesRight'],
-        visualAcuityWithoutGlassesLeft: map['visualAcuityWithoutGlassesLeft'],
-        visualAcuityWithGlassesRight: map['visualAcuityWithGlassesRight'],
-        visualAcuityWithGlassesLeft: map['visualAcuityWithGlassesLeft'],
-        hearingLeft: map['hearingLeft'],
-        hearingRight: map['hearingRight'],
-        heart: map['heart'],
-        bloodPressure: map['bloodPressure'],
-        eyes: map['eyes'],
-        respiratorySystem: map['respiratorySystem'],
-        pharynx: map['pharynx'],
-        lungs: map['lungs'],
-        teeth: map['teeth'],
-        liver: map['liver'],
-        lymphaticGlands: map['lymphaticGlands'],
-        spleen: map['spleen'],
-        skin: map['skin'],
-        hernia: map['hernia'],
-        papillaryReflex: map['papillaryReflex'],
-        spinalReflex: map['spinalReflex'],
-        urineAlbumin: map['urineAlbumin'],
-        urineSugar: map['urineSugar'],
-        urineProtein: map['urineProtein'],
-        stoolOccultBlood: map['stoolOccultBlood'],
-        stoolMicroscope: map['stoolMicroscope'],
-        stoolOvaOrCyst: map['stoolOvaOrCyst'],
-        bloodHb: map['bloodHb'],
-        bloodGroup: map['bloodGroup'],
-        genotype: map['genotype'],
-        vdrlTest: map['vdrlTest'],
-        chestXRayFilmNo: map['chestXRayFilmNo'],
-        chestXRayHospital: map['chestXRayHospital'],
-        chestXRayReport: map['chestXRayReport'],
-        otherObservation: map['otherObservation'],
-        remarks: map['remarks'],
-        testDate: (map['testDate'] as Timestamp).toDate(),
-        medicalOfficerName: map['medicalOfficerName'],
-        hospitalAddress: map['hospitalAddress'],
-      ),
+      biodata: PatientBiodata.fromMap(
+          Map<String, dynamic>.from(map['biodata'] ?? {})),
+      medicalTest: PatientMedicalTest.fromMap(
+          Map<String, dynamic>.from(map['medicalTest'] ?? {})),
       dateTimeCreated: (map['dateTimeCreated'] as Timestamp).toDate(),
     );
   }

@@ -62,10 +62,22 @@ class AppRoutes {
       case biodata:
         return MaterialPageRoute(builder: (_) => const BiodataFormScreen());
       case medicalTest:
-        final biodata = settings.arguments as PatientBiodata;
-        return MaterialPageRoute(
-          builder: (_) => MedicalTestFormScreen(biodata: biodata),
-        );
+        final args = settings.arguments;
+        if (args is PatientBiodata) {
+          return MaterialPageRoute(
+            builder: (_) => MedicalTestFormScreen(biodata: args),
+          );
+        } else {
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(
+              body: Center(
+                child: Text(
+                    'Error: Patient biodata is required for Medical Test screen.'),
+              ),
+            ),
+          );
+        }
+
       case viewPatients:
         return MaterialPageRoute(builder: (_) => const ViewPatientsScreen());
       case addDrug:

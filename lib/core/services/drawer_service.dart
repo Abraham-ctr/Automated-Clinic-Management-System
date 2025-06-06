@@ -8,26 +8,37 @@ class DrawerService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Fetch user data
   Future<void> fetchUserData(BuildContext context) async {
     final user = _auth.currentUser;
-    if (user != null) {
-      try {
-        DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
 
-        if (userDoc.exists) {
-          // Extract user data
-          String firstName = userDoc['firstName'] ?? '';
-          String middleName = userDoc['middleName'] ?? '';
-          String surname = userDoc['surname'] ?? '';
-          String email = userDoc['email'] ?? '';
+    if (user == null) return;
 
-          // Use the provider to update user data
-          Provider.of<DrawerProvider>(context, listen: false).setUserData(firstName, middleName, surname, email);
+    try {
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+      if (userDoc.exists && context.mounted) {
+        final data = userDoc.data();
+
+        if (data != null) {
+          final firstName = data['firstName'] ?? '';
+          final middleName = data['middleName'] ?? '';
+          final surname = data['surname'] ?? '';
+          final email = data['email'] ?? '';
+
+          Provider.of<DrawerProvider>(context, listen: false)
+              .setUserData(firstName, middleName, surname, email);
+        } else {
+          Provider.of<DrawerProvider>(context, listen: false)
+              .setError('User data is empty.');
         }
-      } catch (e) {
-        // Directly show error in the context, but no mounted check here
-        Provider.of<DrawerProvider>(context, listen: false).setError("Error fetching user data: $e");
+      } else if (context.mounted) {
+        Provider.of<DrawerProvider>(context, listen: false)
+            .setError('User document does not exist.');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Provider.of<DrawerProvider>(context, listen: false)
+            .setError("Error fetching user data: $e");
       }
     }
   }
