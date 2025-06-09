@@ -1,6 +1,9 @@
 import 'package:automated_clinic_management_system/core/services/patient_service.dart';
+import 'package:automated_clinic_management_system/core/utils/constants.dart';
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:automated_clinic_management_system/models/patient.dart';
 import 'package:automated_clinic_management_system/screens/features/patient_management/view_patient/patient_detail_screen.dart';
+import 'package:automated_clinic_management_system/widgets/form_header.dart';
 import 'package:flutter/material.dart';
 
 class ViewPatientsScreen extends StatefulWidget {
@@ -65,13 +68,15 @@ class _ViewPatientsScreenState extends State<ViewPatientsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Patients'),
-      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
+          FormHeader(
+              text: 'Patients',
+              onPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.dashboard)),
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
             child: TextField(
               controller: _searchController,
               decoration: const InputDecoration(
@@ -115,21 +120,38 @@ class _ViewPatientsScreenState extends State<ViewPatientsScreen> {
                       final fullName =
                           '${patient.biodata.surname} ${patient.biodata.firstName}';
 
-                      return ListTile(
-                        leading: const CircleAvatar(child: Icon(Icons.person)),
-                        title: Text(fullName),
-                        subtitle: Text(
-                            'Matric Number: ${patient.biodata.matricNumber}'),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  PatientDetailScreen(patient: patient),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading:
+                                  const CircleAvatar(child: Icon(Icons.person)),
+                              title: Text(
+                                fullName,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppConstants.priColor),
+                              ),
+                              subtitle: Text(
+                                  'Matric Number: ${patient.biodata.matricNumber}'),
+                              trailing:
+                                  const Icon(Icons.arrow_forward_ios, size: 16),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        PatientDetailScreen(patient: patient),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
+                            const SizedBox(
+                              height: 10,
+                            )
+                          ],
+                        ),
                       );
                     },
                   );

@@ -2,47 +2,52 @@ import 'package:automated_clinic_management_system/models/consultation_model.dar
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ConsultationService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String _collectionPath = 'consultations';
+  final CollectionReference _consultationCollection =
+      FirebaseFirestore.instance.collection('consultations');
 
-  /// Save a new consultation
+  /// Add a new consultation to Firestore
   Future<void> addConsultation(Consultation consultation) async {
-    final docRef = _firestore.collection(_collectionPath).doc(consultation.id);
-    await docRef.set(consultation.toMap());
-  }
-
-  /// Get consultation by id
-  Future<Consultation?> getConsultationById(String id) async {
-    final doc = await _firestore.collection(_collectionPath).doc(id).get();
-    if (doc.exists) {
-      return Consultation.fromMap(doc.data()!);
+    try {
+      await _consultationCollection.add(consultation.toMap());
+    } catch (e) {
+      // Handle error appropriately in your app
+      throw Exception('Failed to add consultation: $e');
     }
-    return null;
   }
 
-  /// Get all consultations (optional: filtered by patientId)
-  Future<List<Consultation>> getAllConsultations({String? patientId}) async {
-    Query query = _firestore.collection(_collectionPath);
+  /// Fetch consultations optionally filtered by patientId
+  Stream<List<Consultation>> getConsultations({String? patientId}) {
+    Query query = _consultationCollection.orderBy('dateCreated', descending: true);
 
     if (patientId != null) {
       query = query.where('patientId', isEqualTo: patientId);
     }
 
-    final querySnapshot = await query.get();
-
-    return querySnapshot.docs
-        .map((doc) => Consultation.fromMap(doc.data()! as Map<String, dynamic>))
-        .toList();
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Consultation.fromFirestore(doc);
+      }).toList();
+    });
   }
 
-  /// Update an existing consultation
-  Future<void> updateConsultation(
-      String id, Map<String, dynamic> updatedData) async {
-    await _firestore.collection(_collectionPath).doc(id).update(updatedData);
+  /// Optional: Update an existing consultation
+  Future<void> updateConsultation(Consultation consultation) async {
+    if (consultation.id == null) {
+      throw Exception('Consultation ID is null, cannot update');
+    }
+    try {
+      await _consultationCollection.doc(consultation.id).update(consultation.toMap());
+    } catch (e) {
+      throw Exception('Failed to update consultation: $e');
+    }
   }
 
-  /// Delete a consultation by id
-  Future<void> deleteConsultation(String id) async {
-    await _firestore.collection(_collectionPath).doc(id).delete();
+  /// Optional: Delete a consultation
+  Future<void> deleteConsultation(String consultationId) async {
+    try {
+      await _consultationCollection.doc(consultationId).delete();
+    } catch (e) {
+      throw Exception('Failed to delete consultation: $e');
+    }
   }
 }

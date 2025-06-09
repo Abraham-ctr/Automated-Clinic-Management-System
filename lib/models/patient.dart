@@ -78,6 +78,47 @@ class PatientBiodata {
       phoneNumberOfNextOfKin: map['phoneNumberOfNextOfKin'],
     );
   }
+
+  PatientBiodata copyWith({
+    String? matricNumber,
+    String? surname,
+    String? firstName,
+    String? otherNames,
+    DateTime? dateOfBirth,
+    String? sex,
+    String? maritalStatus,
+    String? nationality,
+    String? placeOfBirth,
+    String? phoneNumber,
+    String? department,
+    String? programme,
+    String? nameOfParentOrGuardian,
+    String? phoneNumberOfParentOrGuardian,
+    String? nameOfNextOfKin,
+    String? phoneNumberOfNextOfKin,
+  }) {
+    return PatientBiodata(
+      matricNumber: matricNumber ?? this.matricNumber,
+      surname: surname ?? this.surname,
+      firstName: firstName ?? this.firstName,
+      otherNames: otherNames ?? this.otherNames,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      sex: sex ?? this.sex,
+      maritalStatus: maritalStatus ?? this.maritalStatus,
+      nationality: nationality ?? this.nationality,
+      placeOfBirth: placeOfBirth ?? this.placeOfBirth,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      department: department ?? this.department,
+      programme: programme ?? this.programme,
+      nameOfParentOrGuardian:
+          nameOfParentOrGuardian ?? this.nameOfParentOrGuardian,
+      phoneNumberOfParentOrGuardian:
+          phoneNumberOfParentOrGuardian ?? this.phoneNumberOfParentOrGuardian,
+      nameOfNextOfKin: nameOfNextOfKin ?? this.nameOfNextOfKin,
+      phoneNumberOfNextOfKin:
+          phoneNumberOfNextOfKin ?? this.phoneNumberOfNextOfKin,
+    );
+  }
 }
 
 class PatientMedicalTest {
@@ -218,48 +259,146 @@ class PatientMedicalTest {
 
   factory PatientMedicalTest.fromMap(Map<String, dynamic> map) {
     return PatientMedicalTest(
-      heightMeters: map['heightMeters'],
-      heightCm: map['heightCm'],
-      weightKg: map['weightKg'],
-      weightG: map['weightG'],
-      visualAcuityWithoutGlassesRight: map['visualAcuityWithoutGlassesRight'],
-      visualAcuityWithoutGlassesLeft: map['visualAcuityWithoutGlassesLeft'],
-      visualAcuityWithGlassesRight: map['visualAcuityWithGlassesRight'],
-      visualAcuityWithGlassesLeft: map['visualAcuityWithGlassesLeft'],
-      hearingLeft: map['hearingLeft'],
-      hearingRight: map['hearingRight'],
-      heart: map['heart'],
-      bloodPressure: map['bloodPressure'],
-      eyes: map['eyes'],
-      respiratorySystem: map['respiratorySystem'],
-      pharynx: map['pharynx'],
-      lungs: map['lungs'],
-      teeth: map['teeth'],
-      liver: map['liver'],
-      lymphaticGlands: map['lymphaticGlands'],
-      spleen: map['spleen'],
-      skin: map['skin'],
-      hernia: map['hernia'],
-      papillaryReflex: map['papillaryReflex'],
-      spinalReflex: map['spinalReflex'],
-      urineAlbumin: map['urineAlbumin'],
-      urineSugar: map['urineSugar'],
-      urineProtein: map['urineProtein'],
-      stoolOccultBlood: map['stoolOccultBlood'],
-      stoolMicroscope: map['stoolMicroscope'],
-      stoolOvaOrCyst: map['stoolOvaOrCyst'],
-      bloodHb: map['bloodHb'],
-      bloodGroup: map['bloodGroup'],
-      genotype: map['genotype'],
-      vdrlTest: map['vdrlTest'],
-      chestXRayFilmNo: map['chestXRayFilmNo'],
-      chestXRayHospital: map['chestXRayHospital'],
-      chestXRayReport: map['chestXRayReport'],
-      otherObservation: map['otherObservation'],
-      remarks: map['remarks'],
-      testDate: (map['testDate'] as Timestamp).toDate(),
-      medicalOfficerName: map['medicalOfficerName'],
-      hospitalAddress: map['hospitalAddress'],
+      heightMeters: map['heightMeters'] ?? 0,
+      heightCm: map['heightCm'] ?? 0,
+      weightKg: map['weightKg'] ?? 0,
+      weightG: map['weightG'] ?? 0,
+      visualAcuityWithoutGlassesRight:
+          map['visualAcuityWithoutGlassesRight'] ?? 'Not yet provided',
+      visualAcuityWithoutGlassesLeft:
+          map['visualAcuityWithoutGlassesLeft'] ?? 'Not yet provided',
+      visualAcuityWithGlassesRight:
+          map['visualAcuityWithGlassesRight'] ?? 'Not yet provided',
+      visualAcuityWithGlassesLeft:
+          map['visualAcuityWithGlassesLeft'] ?? 'Not yet provided',
+      hearingLeft: map['hearingLeft'] ?? 'Not yet provided',
+      hearingRight: map['hearingRight'] ?? 'Not yet provided',
+      heart: map['heart'] ?? 'Not yet provided',
+      bloodPressure: map['bloodPressure'] ?? 'Not yet provided',
+      eyes: map['eyes'] ?? 'Not yet provided',
+      respiratorySystem: map['respiratorySystem'] ?? 'Not yet provided',
+      pharynx: map['pharynx'] ?? 'Not yet provided',
+      lungs: map['lungs'] ?? 'Not yet provided',
+      teeth: map['teeth'] ?? 'Not yet provided',
+      liver: map['liver'] ?? 'Not yet provided',
+      lymphaticGlands: map['lymphaticGlands'] ?? 'Not yet provided',
+      spleen: map['spleen'] ?? 'Not yet provided',
+      skin: map['skin'] ?? 'Not yet provided',
+      hernia: map['hernia'] ?? 'Not yet provided',
+      papillaryReflex: map['papillaryReflex'] ?? 'Not yet provided',
+      spinalReflex: map['spinalReflex'] ?? 'Not yet provided',
+      urineAlbumin: map['urineAlbumin'] ?? 'Not yet provided',
+      urineSugar: map['urineSugar'] ?? 'Not yet provided',
+      urineProtein: map['urineProtein'] ?? 'Not yet provided',
+      stoolOccultBlood: map['stoolOccultBlood'] ?? 'Not yet provided',
+      stoolMicroscope: map['stoolMicroscope'] ?? 'Not yet provided',
+      stoolOvaOrCyst: map['stoolOvaOrCyst'] ?? 'Not yet provided',
+      bloodHb: map['bloodHb'] ?? 'Not yet provided',
+      bloodGroup: map['bloodGroup'] ?? 'Not yet provided',
+      genotype: map['genotype'] ?? 'Not yet provided',
+      vdrlTest: map['vdrlTest'] ?? 'Not yet provided',
+      chestXRayFilmNo: map['chestXRayFilmNo'] ?? 'Not yet provided',
+      chestXRayHospital: map['chestXRayHospital'] ?? 'Not yet provided',
+      chestXRayReport: map['chestXRayReport'] ?? 'Not yet provided',
+      otherObservation: map['otherObservation'] ?? 'Not yet provided',
+      remarks: map['remarks'] ?? 'Not yet provided',
+      testDate: (map['testDate'] as Timestamp?)?.toDate() ?? DateTime(2000),
+      medicalOfficerName: map['medicalOfficerName'] ?? 'Not yet provided',
+      hospitalAddress: map['hospitalAddress'] ?? 'Not yet provided',
+    );
+  }
+
+  PatientMedicalTest copyWith({
+    int? heightMeters,
+    int? heightCm,
+    int? weightKg,
+    int? weightG,
+    String? visualAcuityWithoutGlassesRight,
+    String? visualAcuityWithoutGlassesLeft,
+    String? visualAcuityWithGlassesRight,
+    String? visualAcuityWithGlassesLeft,
+    String? hearingLeft,
+    String? hearingRight,
+    String? heart,
+    String? bloodPressure,
+    String? eyes,
+    String? respiratorySystem,
+    String? pharynx,
+    String? lungs,
+    String? teeth,
+    String? liver,
+    String? lymphaticGlands,
+    String? spleen,
+    String? skin,
+    String? hernia,
+    String? papillaryReflex,
+    String? spinalReflex,
+    String? urineAlbumin,
+    String? urineSugar,
+    String? urineProtein,
+    String? stoolOccultBlood,
+    String? stoolMicroscope,
+    String? stoolOvaOrCyst,
+    String? bloodHb,
+    String? bloodGroup,
+    String? genotype,
+    String? vdrlTest,
+    String? chestXRayFilmNo,
+    String? chestXRayHospital,
+    String? chestXRayReport,
+    String? otherObservation,
+    String? remarks,
+    DateTime? testDate,
+    String? medicalOfficerName,
+    String? hospitalAddress,
+  }) {
+    return PatientMedicalTest(
+      heightMeters: heightMeters ?? this.heightMeters,
+      heightCm: heightCm ?? this.heightCm,
+      weightKg: weightKg ?? this.weightKg,
+      weightG: weightG ?? this.weightG,
+      visualAcuityWithoutGlassesRight: visualAcuityWithoutGlassesRight ??
+          this.visualAcuityWithoutGlassesRight,
+      visualAcuityWithoutGlassesLeft:
+          visualAcuityWithoutGlassesLeft ?? this.visualAcuityWithoutGlassesLeft,
+      visualAcuityWithGlassesRight:
+          visualAcuityWithGlassesRight ?? this.visualAcuityWithGlassesRight,
+      visualAcuityWithGlassesLeft:
+          visualAcuityWithGlassesLeft ?? this.visualAcuityWithGlassesLeft,
+      hearingLeft: hearingLeft ?? this.hearingLeft,
+      hearingRight: hearingRight ?? this.hearingRight,
+      heart: heart ?? this.heart,
+      bloodPressure: bloodPressure ?? this.bloodPressure,
+      eyes: eyes ?? this.eyes,
+      respiratorySystem: respiratorySystem ?? this.respiratorySystem,
+      pharynx: pharynx ?? this.pharynx,
+      lungs: lungs ?? this.lungs,
+      teeth: teeth ?? this.teeth,
+      liver: liver ?? this.liver,
+      lymphaticGlands: lymphaticGlands ?? this.lymphaticGlands,
+      spleen: spleen ?? this.spleen,
+      skin: skin ?? this.skin,
+      hernia: hernia ?? this.hernia,
+      papillaryReflex: papillaryReflex ?? this.papillaryReflex,
+      spinalReflex: spinalReflex ?? this.spinalReflex,
+      urineAlbumin: urineAlbumin ?? this.urineAlbumin,
+      urineSugar: urineSugar ?? this.urineSugar,
+      urineProtein: urineProtein ?? this.urineProtein,
+      stoolOccultBlood: stoolOccultBlood ?? this.stoolOccultBlood,
+      stoolMicroscope: stoolMicroscope ?? this.stoolMicroscope,
+      stoolOvaOrCyst: stoolOvaOrCyst ?? this.stoolOvaOrCyst,
+      bloodHb: bloodHb ?? this.bloodHb,
+      bloodGroup: bloodGroup ?? this.bloodGroup,
+      genotype: genotype ?? this.genotype,
+      vdrlTest: vdrlTest ?? this.vdrlTest,
+      chestXRayFilmNo: chestXRayFilmNo ?? this.chestXRayFilmNo,
+      chestXRayHospital: chestXRayHospital ?? this.chestXRayHospital,
+      chestXRayReport: chestXRayReport ?? this.chestXRayReport,
+      otherObservation: otherObservation ?? this.otherObservation,
+      remarks: remarks ?? this.remarks,
+      testDate: testDate ?? this.testDate,
+      medicalOfficerName: medicalOfficerName ?? this.medicalOfficerName,
+      hospitalAddress: hospitalAddress ?? this.hospitalAddress,
     );
   }
 }
@@ -267,32 +406,35 @@ class PatientMedicalTest {
 class Patient {
   final PatientBiodata biodata;
   final PatientMedicalTest medicalTest;
-  final DateTime dateTimeCreated;
 
   Patient({
     required this.biodata,
     required this.medicalTest,
-    required this.dateTimeCreated,
   });
-
-  // Firestore document ID
-  String get id => biodata.matricNumber;
 
   Map<String, dynamic> toMap() {
     return {
       'biodata': biodata.toMap(),
       'medicalTest': medicalTest.toMap(),
-      'dateTimeCreated': Timestamp.fromDate(dateTimeCreated),
     };
   }
 
   factory Patient.fromMap(Map<String, dynamic> map) {
     return Patient(
-      biodata: PatientBiodata.fromMap(
-          Map<String, dynamic>.from(map['biodata'] ?? {})),
-      medicalTest: PatientMedicalTest.fromMap(
-          Map<String, dynamic>.from(map['medicalTest'] ?? {})),
-      dateTimeCreated: (map['dateTimeCreated'] as Timestamp).toDate(),
+      biodata: PatientBiodata.fromMap(map['biodata'] ?? {}),
+      medicalTest: map['medicalTest'] != null
+          ? PatientMedicalTest.fromMap(map['medicalTest'])
+          : PatientMedicalTest.fromMap({}), // fallback to empty map
+    );
+  }
+
+  Patient copyWith({
+    PatientBiodata? biodata,
+    PatientMedicalTest? medicalTest,
+  }) {
+    return Patient(
+      biodata: biodata ?? this.biodata,
+      medicalTest: medicalTest ?? this.medicalTest,
     );
   }
 }

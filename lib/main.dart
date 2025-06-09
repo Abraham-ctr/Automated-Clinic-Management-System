@@ -37,11 +37,11 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'DOMICARE',
-            theme: themeProvider.themeData, // Use the dynamic theme
+            theme: themeProvider.themeData,
 
             // Use onGenerateRoute instead of routes:
             onGenerateRoute: AppRoutes.generateRoute,
-            initialRoute: AppRoutes.login,
+            initialRoute: AppRoutes.newConsultation,
           );
         },
       ),

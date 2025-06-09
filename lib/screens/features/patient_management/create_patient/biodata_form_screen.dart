@@ -219,15 +219,6 @@ class _BiodataFormScreenState extends State<BiodataFormScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
-      // appBar: AppBar(
-      //   title: const Text('Patient Biodata'),
-      //   centerTitle: true,
-      //   backgroundColor: AppConstants.priColor,
-      //   elevation: 0,
-      //   iconTheme: const IconThemeData(color: Colors.white),
-      // ),
-
       body: Center(
         child: Padding(
           padding:

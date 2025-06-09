@@ -325,42 +325,44 @@ class _MedicalTestFormScreenState extends State<MedicalTestFormScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
-        readOnly: true,
-        controller: _testDateController,
-        decoration: InputDecoration(
-          labelText: 'Test Date *',
-          labelStyle: const TextStyle(color: AppConstants.darkGreyColor),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppConstants.middleGreyColor),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppConstants.middleGreyColor),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              color: AppConstants.priColor,
-              width: 2,
+          readOnly: true,
+          controller: _testDateController,
+          decoration: InputDecoration(
+            labelText: 'Test Date *',
+            labelStyle: const TextStyle(color: AppConstants.darkGreyColor),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppConstants.middleGreyColor),
             ),
-          ),
-          filled: true,
-          fillColor: AppConstants.whiteColor,
-          prefixIcon: const Icon(Icons.calendar_today,
-              color: AppConstants.darkGreyColor),
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.edit_outlined,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppConstants.middleGreyColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: AppConstants.priColor,
+                width: 2,
+              ),
+            ),
+            filled: true,
+            fillColor: AppConstants.whiteColor,
+            prefixIcon: const Icon(Icons.calendar_today,
                 color: AppConstants.darkGreyColor),
-            onPressed: () => _selectDate(context),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.edit_outlined,
+                  color: AppConstants.darkGreyColor),
+              onPressed: () => _selectDate(context),
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        ),
-        onTap: () => _selectDate(context),
-        validator: (value) =>
-            _testDate == null ? 'Please select test date' : null,
-      ),
+          onTap: () => _selectDate(context),
+          validator: (value) {
+            _testDate == null ? 'Please select test date' : null;
+            (value == null || value.isEmpty) ? 'Please select test date' : null;
+            return null;
+          }),
     );
   }
 

@@ -1,8 +1,10 @@
 import 'package:automated_clinic_management_system/models/patient.dart';
+import 'package:automated_clinic_management_system/screens/features/consultation_management/new_consultaion.dart';
 import 'package:automated_clinic_management_system/screens/features/inventory_management/add_drug_screen.dart';
 import 'package:automated_clinic_management_system/screens/features/inventory_management/drug_list_screen.dart';
 import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/biodata_form_screen.dart';
 import 'package:automated_clinic_management_system/screens/features/patient_management/create_patient/medical_test_form_screen.dart';
+import 'package:automated_clinic_management_system/screens/features/patient_management/view_patient/patient_detail_screen.dart';
 import 'package:automated_clinic_management_system/screens/features/patient_management/view_patient/view_patient.dart';
 import 'package:automated_clinic_management_system/screens/features/notifications/drug_alerts_page.dart';
 import 'package:automated_clinic_management_system/screens/features/reports/reports_analytics_page.dart';
@@ -30,8 +32,10 @@ class AppRoutes {
   static const String biodata = '/biodata';
   static const String medicalTest = '/medicalTest';
   static const String viewPatients = '/viewPatients';
+  static const String patientDetails = '/patientDetails';
 
   // consultations
+  static const String newConsultation = '/newConsultation';
 
   // drugs
   static const String addDrug = '/addDrug';
@@ -77,9 +81,28 @@ class AppRoutes {
             ),
           );
         }
-
       case viewPatients:
         return MaterialPageRoute(builder: (_) => const ViewPatientsScreen());
+      case patientDetails:
+        final args = settings.arguments;
+        if (args is Patient) {
+          return MaterialPageRoute(
+            builder: (_) => PatientDetailScreen(patient: args),
+          );
+        } else {
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(
+              body: Center(
+                child: Text(
+                    'Error: Patient data is required for Patient Details screen.'),
+              ),
+            ),
+          );
+        }
+      // consultation
+      case newConsultation:
+        return MaterialPageRoute(builder: (_) => const NewConsultationScreen());
+
       case addDrug:
         return MaterialPageRoute(builder: (_) => const AddDrugScreen());
       case viewDrug:

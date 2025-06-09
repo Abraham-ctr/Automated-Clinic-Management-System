@@ -116,15 +116,26 @@ class _DrugListScreenState extends State<DrugListScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Drug'),
+        title: const Text(
+          'Delete Drug',
+        ),
         content: const Text('Are you sure you want to delete this drug?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Cancel',
+            ),
+          ),
           TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Delete')),
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(AppConstants.secColor),
+              ),
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: AppConstants.whiteColor),
+              )),
         ],
       ),
     );
@@ -370,6 +381,10 @@ class _DrugListScreenState extends State<DrugListScreen> {
                                       onPressed: _isSaving[drug.id!] == true
                                           ? null
                                           : () => _saveEditing(drug.id!),
+                                      style: const ButtonStyle(
+                                          backgroundColor:
+                                              const WidgetStatePropertyAll(
+                                                  AppConstants.secColor)),
                                       child: _isSaving[drug.id!] == true
                                           ? const SizedBox(
                                               width: 20,
@@ -381,7 +396,12 @@ class _DrugListScreenState extends State<DrugListScreen> {
                                                         Color>(Colors.white),
                                               ),
                                             )
-                                          : const Text('Save'),
+                                          : const Text(
+                                              'Save',
+                                              style: TextStyle(
+                                                  color:
+                                                      AppConstants.whiteColor),
+                                            ),
                                     ),
                                   ],
                                 )
@@ -398,8 +418,9 @@ class _DrugListScreenState extends State<DrugListScreen> {
                           title: Text(
                             drug.name,
                             style: TextStyle(
-                              color:
-                                  lowStock ? Colors.red : AppConstants.secColor,
+                              color: lowStock
+                                  ? Colors.red
+                                  : const Color.fromARGB(255, 0, 255, 8),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -445,13 +466,18 @@ class _DrugListScreenState extends State<DrugListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: "Add New Drug",
+        backgroundColor: AppConstants.priColor,
         onPressed: () {
           // Navigate to your AddDrugScreen
           Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const AddDrugScreen()),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: AppConstants.whiteColor,
+          size: 44,
+        ),
       ),
     );
   }
