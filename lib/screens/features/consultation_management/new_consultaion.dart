@@ -1,5 +1,4 @@
 
-import 'package:automated_clinic_management_system/core/services/auth_service.dart';
 import 'package:automated_clinic_management_system/core/services/consultation_service.dart';
 import 'package:automated_clinic_management_system/core/services/patient_service.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
@@ -21,7 +20,6 @@ class _NewConsultationScreenState extends State<NewConsultationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _patientService = PatientService();
   final _consultationService = ConsultationService();
-  final _authService = AuthService();
   UserModel? _currentNurse;
 
   final _complaintsController = TextEditingController();

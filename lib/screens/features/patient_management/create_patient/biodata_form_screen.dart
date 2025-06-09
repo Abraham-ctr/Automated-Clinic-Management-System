@@ -248,7 +248,7 @@ class _BiodataFormScreenState extends State<BiodataFormScreen> {
                           FormHeader(
                             text: "Biodata",
                             onPressed: () {
-                              Navigator.pop;
+                              Navigator.pushNamed(context, AppRoutes.dashboard);
                             },
                           ),
                           // Personal Information Section

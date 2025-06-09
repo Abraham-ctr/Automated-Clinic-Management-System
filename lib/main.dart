@@ -35,13 +35,13 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
-            debugShowCheckedModeBanner: false,
+            debugShowCheckedModeBanner: true,
             title: 'DOMICARE',
             theme: themeProvider.themeData,
 
             // Use onGenerateRoute instead of routes:
             onGenerateRoute: AppRoutes.generateRoute,
-            initialRoute: AppRoutes.newConsultation,
+            initialRoute: AppRoutes.landing,
           );
         },
       ),

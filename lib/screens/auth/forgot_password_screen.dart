@@ -123,7 +123,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       MyButton(
                         text: isLoading ? "Sending..." : "Reset",
                         onPressed: isLoading ? null : _onSendResetLinkPressed,
-                        isPrimary: true,
+                        isPrimary: false,
                       )
                     ],
                   ),
