@@ -1,12 +1,15 @@
-
+import 'package:automated_clinic_management_system/core/services/auth_service.dart';
 import 'package:automated_clinic_management_system/core/services/consultation_service.dart';
 import 'package:automated_clinic_management_system/core/services/patient_service.dart';
 import 'package:automated_clinic_management_system/core/utils/constants.dart';
+import 'package:automated_clinic_management_system/core/utils/routes.dart';
 import 'package:automated_clinic_management_system/models/consultation_model.dart';
 import 'package:automated_clinic_management_system/models/patient.dart';
 import 'package:automated_clinic_management_system/models/user_model.dart';
+import 'package:automated_clinic_management_system/widgets/auth/my_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NewConsultationScreen extends StatefulWidget {
@@ -30,21 +33,23 @@ class _NewConsultationScreenState extends State<NewConsultationScreen> {
   Patient? _selectedPatient;
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate() && _selectedPatient != null && _currentNurse != null) {
-    final consultation = Consultation(
-      patientId: _selectedPatient!.biodata.matricNumber,
-      complaints: _complaintsController.text,
-      diagnosis: _diagnosisController.text,
-      treatment: _treatmentController.text,
-      notes: _notesController.text.isEmpty ? null : _notesController.text,
-      createdBy: '${_currentNurse!.firstName} ${_currentNurse!.surname}',
-      dateCreated: Timestamp.now(),
-    );
+    if (_formKey.currentState!.validate() &&
+        _selectedPatient != null &&
+        _currentNurse != null) {
+      final consultation = Consultation(
+        patientId: _selectedPatient!.biodata.matricNumber,
+        complaints: _complaintsController.text,
+        diagnosis: _diagnosisController.text,
+        treatment: _treatmentController.text,
+        notes: _notesController.text.isEmpty ? null : _notesController.text,
+        createdBy: '${_currentNurse!.firstName} ${_currentNurse!.surname}',
+        dateCreated: Timestamp.now(),
+      );
 
       await _consultationService.addConsultation(consultation);
+      Navigator.pushReplacementNamed(context, AppRoutes.viewConsult);
 
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Consultation saved successfully')),
       );
@@ -55,6 +60,43 @@ class _NewConsultationScreenState extends State<NewConsultationScreen> {
         _diagnosisController.clear();
         _treatmentController.clear();
         _notesController.clear();
+      });
+    }
+  }
+
+  Future<void> _confirmAndSubmit() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Confirm Submission'),
+        content:
+            const Text('Are you sure you want to submit this consultation?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel')),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Submit')),
+        ],
+      ),
+    );
+    if (confirmed == true) _submitForm();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    // Example using FirebaseAuth (update based on your actual auth logic)
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      final nurse = await AuthService().getCurrentUser();
+      setState(() {
+        _currentNurse = nurse;
       });
     }
   }
@@ -191,25 +233,28 @@ class _NewConsultationScreenState extends State<NewConsultationScreen> {
                                   controller: _complaintsController,
                                   label: 'Complaints',
                                   icon: Icons.report_problem,
-                                  validator: (value) => value == null || value.isEmpty
-                                      ? 'Enter complaints'
-                                      : null,
+                                  validator: (value) =>
+                                      value == null || value.isEmpty
+                                          ? 'Enter complaints'
+                                          : null,
                                 ),
                                 _buildTextFormField(
                                   controller: _diagnosisController,
                                   label: 'Diagnosis',
                                   icon: Icons.medical_services,
-                                  validator: (value) => value == null || value.isEmpty
-                                      ? 'Enter diagnosis'
-                                      : null,
+                                  validator: (value) =>
+                                      value == null || value.isEmpty
+                                          ? 'Enter diagnosis'
+                                          : null,
                                 ),
                                 _buildTextFormField(
                                   controller: _treatmentController,
                                   label: 'Treatment',
                                   icon: Icons.healing,
-                                  validator: (value) => value == null || value.isEmpty
-                                      ? 'Enter treatment'
-                                      : null,
+                                  validator: (value) =>
+                                      value == null || value.isEmpty
+                                          ? 'Enter treatment'
+                                          : null,
                                 ),
                                 _buildTextFormField(
                                   controller: _notesController,
@@ -218,21 +263,11 @@ class _NewConsultationScreenState extends State<NewConsultationScreen> {
                                   validator: null,
                                 ),
                                 const SizedBox(height: 20),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton.icon(
-                                    icon: const Icon(Icons.save),
-                                    label: const Text('Submit Consultation'),
-                                    onPressed: _submitForm,
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 14),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                )
+                                MyButton(
+                                  text: 'Submit Consultation',
+                                  onPressed: _confirmAndSubmit,
+                                  isPrimary: true,
+                                ),
                               ],
                             ),
                           ),

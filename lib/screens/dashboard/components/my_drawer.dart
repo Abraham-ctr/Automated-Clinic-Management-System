@@ -118,9 +118,9 @@ class MyDrawer extends StatelessWidget {
                         _buildDrawerItem(Icons.add, "New Consultation",
                             '/newConsultation', context),
                         _buildDrawerItem(Icons.visibility, "View Consultations",
-                            '/viewConsultations', context),
+                            AppRoutes.viewConsult, context),
                       ],
-                      ['/newConsultation', '/viewConsultations'], // 🔹 Add this
+                      [AppRoutes.newConsultation, AppRoutes.viewConsult],
                       context,
                     ),
                     _buildExpansionTile(

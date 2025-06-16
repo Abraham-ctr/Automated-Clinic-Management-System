@@ -167,7 +167,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.blue,
                         flippedCardNotifier: _flippedCardNotifier,
                         onTap: () {
-                          Navigator.pushNamed(context, '/patientManagement');
+                          Navigator.pushNamed(context, AppRoutes.viewPatients);
                         },
                       ),
                       FeatureCard(
@@ -176,7 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.green,
                         flippedCardNotifier: _flippedCardNotifier,
                         onTap: () {
-                          Navigator.pushNamed(context, '/consultations');
+                          Navigator.pushNamed(context, AppRoutes.viewConsult);
                         },
                       ),
                       FeatureCard(
@@ -185,7 +185,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.purple,
                         flippedCardNotifier: _flippedCardNotifier,
                         onTap: () {
-                          Navigator.pushNamed(context, '/inventory');
+                          Navigator.pushNamed(context, AppRoutes.viewDrug);
                         },
                       ),
                       FeatureCard(
@@ -194,7 +194,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.orange,
                         flippedCardNotifier: _flippedCardNotifier,
                         onTap: () {
-                          Navigator.pushNamed(context, '/reports');
+                          Navigator.pushNamed(context, AppRoutes.reports);
                         },
                       ),
                       FeatureCard(
@@ -203,7 +203,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.red,
                         flippedCardNotifier: _flippedCardNotifier,
                         onTap: () {
-                          Navigator.pushNamed(context, '/notifications');
+                          Navigator.pushNamed(context, AppRoutes.notifications);
                         },
                       ),
                     ],

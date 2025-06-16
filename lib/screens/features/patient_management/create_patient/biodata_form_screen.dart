@@ -233,6 +233,7 @@ class _BiodataFormScreenState extends State<BiodataFormScreen> {
                 interactive: true,
                 trackVisibility: true,
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Form(
                     key: _formKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,

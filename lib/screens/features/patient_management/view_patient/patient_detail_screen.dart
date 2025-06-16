@@ -32,7 +32,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen>
     _medicalTest = widget.patient.medicalTest;
     _editableBiodata = _deepCopyBiodata(_biodata);
     _editableMedicalTest = _deepCopyMedicalTest(_medicalTest);
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   // Deep copies to avoid editing original references
@@ -414,13 +414,13 @@ class _PatientDetailScreenState extends State<PatientDetailScreen>
                   _editableMedicalTest.copyWith(genotype: val);
             });
           }),
-          _editableField('Blood Pressure', _editableMedicalTest.bloodPressure,
-              (val) {
-            setState(() {
-              _editableMedicalTest =
-                  _editableMedicalTest.copyWith(bloodPressure: val);
-            });
-          }),
+          // _editableField('Blood Pressure', _editableMedicalTest.bloodPressure,
+          //     (val) {
+          //   setState(() {
+          //     _editableMedicalTest =
+          //         _editableMedicalTest.copyWith(bloodPressure: val);
+          //   });
+          // }),
           _editableField('Heart', _editableMedicalTest.heart, (val) {
             setState(() {
               _editableMedicalTest = _editableMedicalTest.copyWith(heart: val);

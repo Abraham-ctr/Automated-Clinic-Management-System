@@ -108,193 +108,198 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
             elevation: 10,
             child: Container(
               constraints: const BoxConstraints(maxWidth: 1000),
+              padding: const EdgeInsets.all(16),
               // color: Colors.red,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FormHeader(
-                        text: "Add New Drug",
-                        onPressed: () =>
-                            Navigator.pushNamed(context, AppRoutes.dashboard)),
-                    SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Drug Name
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Drug Name',
-                                labelStyle:
-                                    const TextStyle(color: Colors.black87),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: AppConstants.middleGreyColor),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FormHeader(
+                          text: "Add New Drug",
+                          onPressed: () => Navigator.pushNamed(
+                              context, AppRoutes.dashboard)),
+                      SizedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Drug Name
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  labelText: 'Drug Name',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.black87),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: AppConstants.middleGreyColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: AppConstants.priColor, width: 2),
+                                  ),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: AppConstants.priColor, width: 2),
-                                ),
+                                validator: (value) =>
+                                    value == null || value.trim().isEmpty
+                                        ? 'Enter drug name'
+                                        : null,
+                                onSaved: (value) => _name = value!.trim(),
                               ),
-                              validator: (value) =>
-                                  value == null || value.trim().isEmpty
-                                      ? 'Enter drug name'
-                                      : null,
-                              onSaved: (value) => _name = value!.trim(),
-                            ),
-                            const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                            // Quantity counter
-                            Row(
-                              children: [
-                                const Text('Quantity Available',
-                                    style: TextStyle(fontSize: 16)),
-                                const SizedBox(
-                                  width: 30,
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      onPressed: _quantity > 1
-                                          ? () => setState(() => _quantity--)
-                                          : null,
-                                      icon: const Icon(Icons.remove),
-                                      color: Colors.redAccent,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      '$_quantity',
-                                      style: const TextStyle(fontSize: 18),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    IconButton(
-                                      onPressed: () =>
-                                          setState(() => _quantity++),
-                                      icon: const Icon(Icons.add),
-                                      color: Colors.green,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // Category Dropdown
-                            DropdownButtonFormField<String>(
-                              value: _category,
-                              decoration: InputDecoration(
-                                labelText: 'Category',
-                                labelStyle:
-                                    const TextStyle(color: Colors.black87),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: AppConstants.middleGreyColor),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: AppConstants.priColor, width: 2),
-                                ),
+                              // Quantity counter
+                              Row(
+                                children: [
+                                  const Text('Quantity Available',
+                                      style: TextStyle(fontSize: 16)),
+                                  const SizedBox(
+                                    width: 30,
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        onPressed: _quantity > 1
+                                            ? () => setState(() => _quantity--)
+                                            : null,
+                                        icon: const Icon(Icons.remove),
+                                        color: Colors.redAccent,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        '$_quantity',
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      IconButton(
+                                        onPressed: () =>
+                                            setState(() => _quantity++),
+                                        icon: const Icon(Icons.add),
+                                        color: Colors.green,
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              items: _categories.map((cat) {
-                                return DropdownMenuItem(
-                                  value: cat,
-                                  child: Text(cat,
-                                      style: const TextStyle(
-                                          color: Colors.black87)),
-                                );
-                              }).toList(),
-                              onChanged: (value) =>
-                                  setState(() => _category = value!),
-                              dropdownColor: AppConstants.whiteColor,
-                              style: const TextStyle(color: Colors.black87),
-                            ),
-                            const SizedBox(height: 16),
 
-                            // Expiry Date Picker
-                            GestureDetector(
-                              onTap: _pickExpiryDate,
-                              child: AbsorbPointer(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Expiry Date',
-                                    labelStyle:
+                              const SizedBox(height: 16),
+
+                              // Category Dropdown
+                              DropdownButtonFormField<String>(
+                                value: _category,
+                                decoration: InputDecoration(
+                                  labelText: 'Category',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.black87),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: AppConstants.middleGreyColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: AppConstants.priColor, width: 2),
+                                  ),
+                                ),
+                                items: _categories.map((cat) {
+                                  return DropdownMenuItem(
+                                    value: cat,
+                                    child: Text(cat,
+                                        style: const TextStyle(
+                                            color: Colors.black87)),
+                                  );
+                                }).toList(),
+                                onChanged: (value) =>
+                                    setState(() => _category = value!),
+                                dropdownColor: AppConstants.whiteColor,
+                                style: const TextStyle(color: Colors.black87),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Expiry Date Picker
+                              GestureDetector(
+                                onTap: _pickExpiryDate,
+                                child: AbsorbPointer(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Expiry Date',
+                                      labelStyle: const TextStyle(
+                                          color: Colors.black87),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: const Icon(
+                                          Icons.calendar_today,
+                                          color: AppConstants.priColor),
+                                    ),
+                                    controller: TextEditingController(
+                                      text: _expiryDate == null
+                                          ? ''
+                                          : DateFormat('yyyy-MM-dd')
+                                              .format(_expiryDate!),
+                                    ),
+                                    style:
                                         const TextStyle(color: Colors.black87),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: const Icon(Icons.calendar_today,
-                                        color: AppConstants.priColor),
                                   ),
-                                  controller: TextEditingController(
-                                    text: _expiryDate == null
-                                        ? ''
-                                        : DateFormat('yyyy-MM-dd')
-                                            .format(_expiryDate!),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Supplier field
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  labelText: 'Supplier (optional)',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.black87),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: AppConstants.middleGreyColor),
                                   ),
-                                  style: const TextStyle(color: Colors.black87),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: AppConstants.priColor, width: 2),
+                                  ),
+                                ),
+                                onSaved: (value) =>
+                                    _supplier = value?.trim() ?? '',
+                                style: const TextStyle(color: Colors.black87),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Threshold display
+                              Text(
+                                'Threshold: $_threshold',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
+                              const SizedBox(height: 32),
 
-                            // Supplier field
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Supplier (optional)',
-                                labelStyle:
-                                    const TextStyle(color: Colors.black87),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: AppConstants.middleGreyColor),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                      color: AppConstants.priColor, width: 2),
-                                ),
+                              // Submit Button (uses custom MyButton)
+                              MyButton(
+                                text: 'Add Drug',
+                                onPressed: _isLoading ? null : _submit,
+                                isPrimary: true,
+                                isLoading: _isLoading,
                               ),
-                              onSaved: (value) =>
-                                  _supplier = value?.trim() ?? '',
-                              style: const TextStyle(color: Colors.black87),
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Threshold display
-                            Text(
-                              'Threshold: $_threshold',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            const SizedBox(height: 32),
-
-                            // Submit Button (uses custom MyButton)
-                            MyButton(
-                              text: 'Add Drug',
-                              onPressed: _isLoading ? null : _submit,
-                              isPrimary: true,
-                              isLoading: _isLoading,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
